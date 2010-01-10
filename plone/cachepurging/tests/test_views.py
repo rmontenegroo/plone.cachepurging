@@ -81,17 +81,6 @@ class TestPurgeImmediately(unittest.TestCase):
         self.settings.enabled = True
         self.settings.cachingProxies = ('http://localhost:1234',)
         
-        
-    def tearDown(self):
-        zope.component.testing.tearDown()
-    
-    def test_disabled(self):
-        self.settings.enabled = False
-        view = PurgeImmediately(FauxContext(), FauxRequest())
-        self.assertEquals('Caching not enabled', view())
-    
-    def test_purge(self):
-        
         class FauxPurgePaths(object):
             implements(IPurgePaths)
             adapts(FauxContext)
@@ -115,6 +104,15 @@ class TestPurgeImmediately(unittest.TestCase):
         
         provideUtility(FauxPurger())
         
+    def tearDown(self):
+        zope.component.testing.tearDown()
+    
+    def test_disabled(self):
+        self.settings.enabled = False
+        view = PurgeImmediately(FauxContext(), FauxRequest())
+        self.assertEquals('Caching not enabled', view())
+    
+    def test_purge(self):
         view = PurgeImmediately(FauxContext(), FauxRequest())
         self.assertEquals("Purged http://localhost:1234/foo Status 200 OK X-Cache cached Error: None\n"
                           "Purged http://localhost:1234/bar Status 200 OK X-Cache cached Error: None\n",
