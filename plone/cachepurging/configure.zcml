@@ -18,6 +18,11 @@
     <!-- Purge queue -->
     <utility factory=".purger.DefaultPurger" />
     
+    <!-- Make sure we can annotate the request -->
+    <class class="ZPublisher.BaseRequest.BaseRequest">
+        <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    </class>
+    
     <!-- Views to explicitly purge the context -->
     <permission
         id="plone.cachepurging.InitiatePurge"
