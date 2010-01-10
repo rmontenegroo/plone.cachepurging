@@ -17,7 +17,7 @@ def isCachingEnabled(registry=None):
         return False
     
     settings = registry.forInterface(ICachePurgingSettings, check=False)
-    return (settings.enabled and settings.cachingProxies)
+    return (settings.enabled and bool(settings.cachingProxies))
 
 def getPathsToPurge(context, request):
     """Given the current request and an object, look up paths to purge for
