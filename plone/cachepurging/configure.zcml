@@ -15,6 +15,10 @@
     <subscriber handler=".hooks.queuePurge" />
     <subscriber handler=".hooks.purge" />
     
+    <!-- Object event purging -->
+    <subscriber handler=".events.purgeOnModified" />
+    <subscriber handler=".events.purgeOnMovedOrRemoved" />
+    
     <!-- Purge queue -->
     <utility factory=".purger.DefaultPurger" />
     

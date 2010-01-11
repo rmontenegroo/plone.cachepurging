@@ -179,6 +179,58 @@ of the following views, registered for any type of context:
 Both of these views require the permission ``plone.cachepurging.InitiatePurge``,
 which by default is granted to the ``Manager`` role only.
 
+Purging objects automatically
+-----------------------------
+
+Quite commonly, you will want to purge objects in three scenarios:
+
+* When the object is modified
+* When the object is moved or renamed
+* When the object is removed
+
+These are of course all described by standard Zope event types from the
+`zope.lifecycleevent`_ package. If the standard ``IObjectModifiedEvent``,
+``IObjectMovedEvent`` and ``IObjectRemovedEvent`` event types are fired for
+your context, you can mark it with the ``IPurgeable`` interface to
+automatically purge the object.
+
+One way to do this without changing the code of your content object is to do
+this in ZCML, e.g. with::
+
+    <class class=".content.MyContent">
+        <implements interface="plone.cachepurging.interfaces.IPurgeable" />
+    </class>
+
+This is equivalent to registering an event handler for each of the events
+above and doing ``notify(Purge(object))`` in each one. That is, an
+``IPurgeEvent`` will be raised in a handler for the lifecycle events, which
+in turn will cause purging to take place.
+
+Purging dependencies
+--------------------
+
+Sometimes, purging one object implies that other objects should be purged
+as well. One way to do this is to register an event handler for the
+``IPurgeEvent`` event type, and dispatch further purge events in response. For
+example, here is some code to purge the parent of the purged object::
+
+    from zope.component import adapter
+    from plone.cachepurging.interfaces import IPurgeEvent
+    from plone.cachepurging import Purge
+
+    @adapter(IMyContent, IPurgeEvent)
+    def purgeParent(object, IPurgeEvent)
+        parent = object.__parent__
+        if parent is not None:
+            notify(Purge(parent))
+
+This could be registered in ZCML like so::
+
+    <subscriber handler=".events.purgeParent" />
+
+If the parent is also of type ``IMyContent`` (or you replace that interface
+with a more generic one), then its parent will be purged too, recursively.
+
 Which URLs get purged?
 ----------------------
 
@@ -337,3 +389,4 @@ front of Zope are configured:
 .. _plone.app.caching: http://pypi.python.org/pypi/plone.app.caching
 .. _ZPublisherEventsBackport: http://pypi.python.org/pypi/ZPublisherEventsBackport
 .. _plone.registry: http://pypi.python.org/pypi/plone.registry
+.. _zope.lifecycleevent: http://pypi.python.org/pypi/zope.lifecycleevent

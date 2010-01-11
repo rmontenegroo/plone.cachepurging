@@ -16,6 +16,15 @@ class IPurgeEvent(IObjectEvent):
     It is safe to fire the event multiple times for the same object. A given
     object will only be purged once.
     """
+
+class IPurgeable(Interface):
+    """Marker interface for content which should be purged when modified or
+    removed.
+    
+    An event handler is registered for ``IObjectModifiedEvent`` and
+    ``IObjectRemovedEvent`` for contexts providing this interface. These are
+    automatically purged.
+    """
     
 class ICachePurgingSettings(Interface):
     """Settings used by the purging algorithm.

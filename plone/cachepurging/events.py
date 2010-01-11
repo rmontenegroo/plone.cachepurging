@@ -1,5 +1,12 @@
 from zope.interface import implements
+from zope.component import adapter
+from zope.event import notify
+
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
+from zope.lifecycleevent.interfaces import IObjectMovedEvent
+
 from plone.cachepurging.interfaces import IPurgeEvent
+from plone.cachepurging.interfaces import IPurgeable
 
 class Purge(object):
     """Event implementation.
@@ -19,3 +26,13 @@ class Purge(object):
     
     def __init__(self, object):
         self.object = object
+
+@adapter(IPurgeable, IObjectModifiedEvent)
+def purgeOnModified(object, event):
+    notify(Purge(object))
+
+@adapter(IPurgeable, IObjectMovedEvent)
+def purgeOnMovedOrRemoved(object, event):
+    # Don't purge when added
+    if event.oldName is not None and event.oldParent is not None:
+        notify(Purge(object))
