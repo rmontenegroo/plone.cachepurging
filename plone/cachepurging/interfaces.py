@@ -87,7 +87,7 @@ class IPurgePaths(Interface):
     they belong.
     """
     
-    def getRelativePaths(self):
+    def getRelativePaths():
         """Return a list of paths that should be purged. The paths should be
         relative to the virtual hosting root, e.g. as returned by
         ``obj.absolute_url_path()``
@@ -96,7 +96,7 @@ class IPurgePaths(Interface):
         necessary, using an IPurgePathRewriter adapter.
         """
         
-    def getAbsolutePaths(self):
+    def getAbsolutePaths():
         """Return a list of paths that should be purged. The paths should be
         relative to the  domain root, i.e. they should start with a '/'.
         
