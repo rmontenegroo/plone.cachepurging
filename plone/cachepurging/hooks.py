@@ -12,7 +12,7 @@ from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.interfaces import IPurger
 
 from plone.cachepurging.utils import getPathsToPurge
-from plone.cachepurging.utils import isCachingEnabled
+from plone.cachepurging.utils import isCachePurgingEnabled
 from plone.cachepurging.utils import getURLsToPurge
 
 KEY = "plone.cachepurging.urls"
@@ -30,7 +30,7 @@ def queuePurge(event):
     if annotations is None:
         return
     
-    if not isCachingEnabled():
+    if not isCachePurgingEnabled():
         return
     
     paths = annotations.setdefault(KEY, set())
@@ -55,7 +55,7 @@ def purge(event):
     if registry is None:
         return
     
-    if not isCachingEnabled(registry=registry):
+    if not isCachePurgingEnabled(registry=registry):
         return
     
     purger = queryUtility(IPurger)

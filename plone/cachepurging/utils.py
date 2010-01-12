@@ -7,7 +7,7 @@ from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.interfaces import IPurgePathRewriter
 from plone.cachepurging.interfaces import IPurgePaths
 
-def isCachingEnabled(registry=None):
+def isCachePurgingEnabled(registry=None):
     """Return True if caching is enabled
     """
     

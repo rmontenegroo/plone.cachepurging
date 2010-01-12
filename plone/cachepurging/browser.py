@@ -12,7 +12,7 @@ from plone.cachepurging import Purge
 
 from plone.cachepurging.utils import getPathsToPurge
 from plone.cachepurging.utils import getURLsToPurge
-from plone.cachepurging.utils import isCachingEnabled
+from plone.cachepurging.utils import isCachePurgingEnabled
 
 class QueuePurge(object):
     """Manually initiate a purge
@@ -24,7 +24,7 @@ class QueuePurge(object):
     
     def __call__(self):
         
-        if not isCachingEnabled():
+        if not isCachePurgingEnabled():
             return 'Caching not enabled'
         
         notify(Purge(self.context))
@@ -40,7 +40,7 @@ class PurgeImmediately(object):
     
     def __call__(self):
         
-        if not isCachingEnabled():
+        if not isCachePurgingEnabled():
             return 'Caching not enabled'
         
         registry = getUtility(IRegistry)

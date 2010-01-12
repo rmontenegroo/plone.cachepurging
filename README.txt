@@ -99,11 +99,11 @@ snippet adapted from the ``plone.cachepurging.purge`` view::
 
         from plone.cachepurging.utils import getPathsToPurge
         from plone.cachepurging.utils import getURLsToPurge
-        from plone.cachepurging.utils import isCachingEnabled
+        from plone.cachepurging.utils import isCachePurgingEnabled
         
         ...
 
-        if not isCachingEnabled():
+        if not isCachePurgingEnabled():
             return 'Caching not enabled'
         
         registry = getUtility(IRegistry)

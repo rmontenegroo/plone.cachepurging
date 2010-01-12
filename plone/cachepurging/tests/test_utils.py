@@ -32,13 +32,13 @@ class TestIsCachingEnabled(unittest.TestCase):
         zope.component.testing.tearDown()
     
     def test_no_registry(self):
-        self.assertEquals(False, utils.isCachingEnabled())
+        self.assertEquals(False, utils.isCachePurgingEnabled())
 
     def test_no_settings(self):
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
         provideUtility(registry, IRegistry)
-        self.assertEquals(False, utils.isCachingEnabled())
+        self.assertEquals(False, utils.isCachePurgingEnabled())
 
     def test_disabled(self):
         registry = Registry()
@@ -49,7 +49,7 @@ class TestIsCachingEnabled(unittest.TestCase):
         settings.enabled = False
         settings.cachingProxies = ('http://localhost:1234',)
         
-        self.assertEquals(False, utils.isCachingEnabled())
+        self.assertEquals(False, utils.isCachePurgingEnabled())
         
     def test_no_proxies(self):
         registry = Registry()
@@ -60,10 +60,10 @@ class TestIsCachingEnabled(unittest.TestCase):
         settings.enabled = False
         
         settings.cachingProxies = None
-        self.assertEquals(False, utils.isCachingEnabled())
+        self.assertEquals(False, utils.isCachePurgingEnabled())
         
         settings.cachingProxies = ()
-        self.assertEquals(False, utils.isCachingEnabled())
+        self.assertEquals(False, utils.isCachePurgingEnabled())
     
     def test_enabled(self):
         registry = Registry()
@@ -73,7 +73,7 @@ class TestIsCachingEnabled(unittest.TestCase):
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
-        self.assertEquals(True, utils.isCachingEnabled())
+        self.assertEquals(True, utils.isCachePurgingEnabled())
     
     def test_passed_registry(self):
         registry = Registry()
@@ -82,8 +82,8 @@ class TestIsCachingEnabled(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
         
-        self.assertEquals(False, utils.isCachingEnabled())
-        self.assertEquals(True, utils.isCachingEnabled(registry))
+        self.assertEquals(False, utils.isCachePurgingEnabled())
+        self.assertEquals(True, utils.isCachePurgingEnabled(registry))
 
 class TestGetPathsToPurge(unittest.TestCase):
     
