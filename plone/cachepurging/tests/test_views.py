@@ -8,15 +8,16 @@ from zope.component import provideUtility
 from zope.component import provideAdapter
 from zope.component import provideHandler
 
+from z3c.caching.interfaces import IPurgePaths
+from z3c.caching.interfaces import IPurgeEvent
+
 from plone.registry.interfaces import IRegistry
 from plone.registry import Registry
 
 from plone.registry.fieldfactory import persistentFieldAdapter
 
 from plone.cachepurging.interfaces import IPurger
-from plone.cachepurging.interfaces import IPurgePaths
 from plone.cachepurging.interfaces import ICachePurgingSettings
-from plone.cachepurging.interfaces import IPurgeEvent
 
 from plone.cachepurging.browser import QueuePurge, PurgeImmediately
 

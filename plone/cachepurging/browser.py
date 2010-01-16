@@ -8,7 +8,7 @@ from plone.registry.interfaces import IRegistry
 from plone.cachepurging.interfaces import IPurger
 from plone.cachepurging.interfaces import ICachePurgingSettings
 
-from plone.cachepurging import Purge
+from z3c.caching.purge import Purge
 
 from plone.cachepurging.utils import getPathsToPurge
 from plone.cachepurging.utils import getURLsToPurge

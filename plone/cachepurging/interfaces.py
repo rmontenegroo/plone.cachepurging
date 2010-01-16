@@ -1,30 +1,9 @@
 from zope.interface import Interface
 from zope import schema
 
-from zope.component.interfaces import IObjectEvent
 from zope.i18nmessageid import MessageFactory
 
 _ = MessageFactory('plone.cachepurging')
-
-class IPurgeEvent(IObjectEvent):
-    """Event which can be fired to purge a particular object.
-    
-    This event is not fired anywhere in this package. Instead, higher level
-    frameworks are expected to fire this event when an object may need to be
-    purged.
-    
-    It is safe to fire the event multiple times for the same object. A given
-    object will only be purged once.
-    """
-
-class IPurgeable(Interface):
-    """Marker interface for content which should be purged when modified or
-    removed.
-    
-    An event handler is registered for ``IObjectModifiedEvent`` and
-    ``IObjectRemovedEvent`` for contexts providing this interface. These are
-    automatically purged.
-    """
     
 class ICachePurgingSettings(Interface):
     """Settings used by the purging algorithm.
@@ -85,33 +64,6 @@ class ICachePurgingSettings(Interface):
             value_type=schema.URI(),
         )
 
-class IPurgePaths(Interface):
-    """Return paths to send as PURGE requests for a given object.
-    
-    The purging hook will look up named adapters from the objects sent to
-    the purge queue (usually by an IPurgeEvent being fired) to this interface.
-    The name is not significant, but is used to allow multiple implementations
-    whilst still permitting per-type overrides. The names should therefore
-    normally be unique, prefixed with the dotted name of the package to which
-    they belong.
-    """
-    
-    def getRelativePaths():
-        """Return a list of paths that should be purged. The paths should be
-        relative to the virtual hosting root, e.g. as returned by
-        ``obj.absolute_url_path()``
-        
-        These paths will be rewritten to incorporate virtual hosting if
-        necessary, using an IPurgePathRewriter adapter.
-        """
-        
-    def getAbsolutePaths():
-        """Return a list of paths that should be purged. The paths should be
-        relative to the  domain root, i.e. they should start with a '/'.
-        
-        These paths will *not* be rewritten to incorporate virtual hosting.
-        """
-        
 class IPurgePathRewriter(Interface):
     """Used to rewrite paths for purging. This should be registered as an
     adapter on the request.

@@ -3,17 +3,18 @@ from zope.annotation.interfaces import IAnnotations
 
 from zope.globalrequest import getRequest
 
-from ZPublisher.interfaces import IPubSuccess
+from z3c.caching.interfaces import IPurgeEvent
 
 from plone.registry.interfaces import IRegistry
 
-from plone.cachepurging.interfaces import IPurgeEvent
 from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.interfaces import IPurger
 
 from plone.cachepurging.utils import getPathsToPurge
 from plone.cachepurging.utils import isCachePurgingEnabled
 from plone.cachepurging.utils import getURLsToPurge
+
+from ZPublisher.interfaces import IPubSuccess
 
 KEY = "plone.cachepurging.urls"
 

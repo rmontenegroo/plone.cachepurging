@@ -4,7 +4,7 @@ Introduction
 This package provides cache purging for Zope 2 applications. It is inspired by
 (and borrows some code from) `Products.CMFSquidTool`_, but it is not tied to
 Squid. In fact, it is tested mainly with `Varnish`_, though it should also
-work with Squid and Enfold Proxy.
+work with `Squid`_ and `Enfold Proxy`_.
 
 This package is not tied to Plone. However, if you intend to use it with
 Plone, you probably want to install `plone.app.caching`_, which provides
@@ -55,13 +55,20 @@ Initiating a purge in code
 
 The simplest way to initiate a purge is to raise a ``Purge`` event::
 
-    from plone.cachepurging import Purge
+    from z3c.caching.purge import Purge
     from zope.event import notify
     
     notify(Purge(context))
 
-This will:
+Notice how we are actually importing from ``z3c.caching`` here. That package
+defines the event type and a few of the interfaces that ``plone.cachepurging``
+uses. In most cases, you should be able to define how your own packages'
+behave in relation to a caching proxy by depending on ``z3c.caching`` only.
+This is a safer dependency, as it in turn depends only on a small set of
+core Zope Toolkit packages.
 
+Presuming ``plone.cachepurging`` is installed, firing the event above will:
+ 
 * Check whether caching is enabled and configured. If not, it will do nothing.
 * Look up paths to purge for the given object. This is done via zero or more
   ``IPurgePaths`` adapters. See "Which URLs get purged?" below.
@@ -198,13 +205,15 @@ One way to do this without changing the code of your content object is to do
 this in ZCML, e.g. with::
 
     <class class=".content.MyContent">
-        <implements interface="plone.cachepurging.interfaces.IPurgeable" />
+        <implements interface="z3c.caching.interfaces.IPurgeable" />
     </class>
 
+(Again notice how we are using a generic interface from ``z3c.caching``).
+
 This is equivalent to registering an event handler for each of the events
-above and doing ``notify(Purge(object))`` in each one. That is, an
-``IPurgeEvent`` will be raised in a handler for the lifecycle events, which
-in turn will cause purging to take place.
+above and doing ``notify(Purge(object))`` in each one. That is, a
+``z3c.caching.interfaces.IPurgeEvent`` will be raised in a handler for the
+lifecycle events, which in turn will cause purging to take place.
 
 Purging dependencies
 --------------------
@@ -215,8 +224,8 @@ as well. One way to do this is to register an event handler for the
 example, here is some code to purge the parent of the purged object::
 
     from zope.component import adapter
-    from plone.cachepurging.interfaces import IPurgeEvent
-    from plone.cachepurging import Purge
+    from z3c.caching.interfaces import IPurgeEvent
+    from z3c.caching.purge import Purge
 
     @adapter(IMyContent, IPurgeEvent)
     def purgeParent(object, IPurgeEvent)
@@ -235,8 +244,8 @@ Which URLs get purged?
 ----------------------
 
 The ``Purge`` event handler calculates the URLs to purge for the object being
-passed via named ``IPurgePaths`` adapters. Any number of such adapters may
-be registered. ``plone.cachepurging`` ships with one, for
+passed via named ``z3c.caching.interfaces.IPurgePaths`` adapters. Any number
+of such adapters may be registered. ``plone.cachepurging`` ships with one, for
 ``OFS.interfaces.ITraversable`` (i.e. most objects that you can find through
 the ZMI), which purges the object's ``absolute_url_path()``.
 
@@ -253,18 +262,18 @@ The ``IPurgePaths`` interface looks like this::
         they belong.
         """
     
-        def getRelativePaths(self):
+        def getRelativePaths():
             """Return a list of paths that should be purged. The paths should be
-            relative to the virtual hosting root, e.g. as returned by
-            ``obj.absolute_url_path()``
+            relative to the virtual hosting root, i.e. they should start with a
+            '/'.
         
             These paths will be rewritten to incorporate virtual hosting if
-            necessary, using an IPurgePathRewriter adapter.
+            necessary.
             """
         
-        def getAbsolutePaths(self):
+        def getAbsolutePaths():
             """Return a list of paths that should be purged. The paths should be
-            relative to the  domain root, i.e. they should start with a '/'.
+            relative to the domain root, i.e. they should start with a '/'.
         
             These paths will *not* be rewritten to incorporate virtual hosting.
             """
@@ -273,8 +282,9 @@ Most implementations will use ``getRelativePaths()`` to return a path relative
 to the virtual hosting root (i.e. what the ``absolute_url_path()`` method
 returns). This is subject to rewriting for virtual hosting (see below).
 
-``getAbsolutePaths()`` is useful if you have an absolute path, e.g.
-if your caching proxy supports "special" URLs to invoke a particular type of
+``getAbsolutePaths()`` is useful if you have a path that is not subject to
+change no matter how Zope is configured. For example, you could use this if
+your caching proxy supports "special" URLs to invoke a particular type of
 purge. (Such behaviour can be implemented in Varnish using VCL, for example.)
 This is *not* subject to rewriting for virtual hosting.
 
@@ -285,7 +295,7 @@ like this::
     from zope.interface import implements
     from zope.component import adapts
 
-    from plone.cachepurging.interfaces import IPurgePaths
+    from z3c.caching.interfaces import IPurgePaths
 
     from Products.CMFCore.interfaces import IContentish
 
@@ -385,7 +395,9 @@ front of Zope are configured:
     not need to set this option.
 
 .. _Products.CMFSquidTool: http://pypi.python.org/pypi/Products.CMFSquidTool
+.. _Squid: http://squid-cache.org
 .. _Varnish: http://varnish-cache.org
+.. _Enfold Proxy: http://enfoldsystems.com/software/proxy/
 .. _plone.app.caching: http://pypi.python.org/pypi/plone.app.caching
 .. _ZPublisherEventsBackport: http://pypi.python.org/pypi/ZPublisherEventsBackport
 .. _plone.registry: http://pypi.python.org/pypi/plone.registry

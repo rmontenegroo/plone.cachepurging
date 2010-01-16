@@ -1,1 +1,0 @@
-from plone.cachepurging.events import Purge

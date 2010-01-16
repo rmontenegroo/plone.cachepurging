@@ -17,17 +17,18 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.globalrequest import setRequest
 
+from z3c.caching.interfaces import IPurgePaths
+from z3c.caching.purge import Purge
+
 from plone.registry.interfaces import IRegistry
 from plone.registry import Registry
 
 from plone.registry.fieldfactory import persistentFieldAdapter
 
 from plone.cachepurging.interfaces import IPurger
-from plone.cachepurging.interfaces import IPurgePaths
 from plone.cachepurging.interfaces import ICachePurgingSettings
 
 from plone.cachepurging.hooks import queuePurge, purge
-from plone.cachepurging import Purge
 
 from ZPublisher.pubevents import PubSuccess
 

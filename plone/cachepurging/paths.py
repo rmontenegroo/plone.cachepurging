@@ -1,7 +1,7 @@
 from zope.interface import implements
 from zope.component import adapts
 
-from plone.cachepurging.interfaces import IPurgePaths
+from z3c.caching.interfaces import IPurgePaths
 
 from OFS.interfaces import ITraversable
 
