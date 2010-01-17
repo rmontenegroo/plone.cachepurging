@@ -47,6 +47,7 @@ class TestQueueHandler(unittest.TestCase):
         
     def tearDown(self):
         zope.component.testing.tearDown()
+        setRequest(None)
     
     def test_no_request(self):
         context = FauxContext()
