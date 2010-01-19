@@ -260,7 +260,7 @@ class Worker(threading.Thread):
                         # case (ie, assuming HTTP 1.0 close semantics), or
                         # if httplib.py is evil for not detecting this
                         # situation and flagging will_close.
-                        if not self.http_1_1 or resp.will_close:
+                        if not self.producer.http_1_1 or resp.will_close:
                             connection.close()
                             connection = None
                         break # all done with this item!
