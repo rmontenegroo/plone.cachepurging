@@ -1,5 +1,6 @@
-Introduction
-============
+
+plone.cachepurging - Caching proxy purge support for Zope 2
+===========================================================
 
 This package provides cache purging for Zope 2 applications. It is inspired by
 (and borrows some code from) `Products.CMFSquidTool`_, but it is not tied to
@@ -14,8 +15,11 @@ Plone-specific configuration and a user interface in Plone's control panel.
 with Zope 2.10, you may be able to do so by installing
 `ZPublisherEventsBackport`_, although this is not a tested configuration.
 
+.. contents:: Table of Contents
+
+
 Installation
--------------
+------------
 
 To use this package, you must do the following:
 
@@ -170,6 +174,7 @@ Here, we:
 * Send a synchronous caching request. This blocks until the caching proxy
   has responded (or timed out).
 
+
 Purging an object manually
 --------------------------
 
@@ -185,6 +190,7 @@ of the following views, registered for any type of context:
 
 Both of these views require the permission ``plone.cachepurging.InitiatePurge``,
 which by default is granted to the ``Manager`` role only.
+
 
 Purging objects automatically
 -----------------------------
@@ -215,6 +221,7 @@ above and doing ``notify(Purge(object))`` in each one. That is, a
 ``z3c.caching.interfaces.IPurgeEvent`` will be raised in a handler for the
 lifecycle events, which in turn will cause purging to take place.
 
+
 Purging dependencies
 --------------------
 
@@ -239,6 +246,7 @@ This could be registered in ZCML like so::
 
 If the parent is also of type ``IMyContent`` (or you replace that interface
 with a more generic one), then its parent will be purged too, recursively.
+
 
 Which URLs get purged?
 ----------------------
@@ -326,6 +334,7 @@ your package's dotted name unless you have a reason not to.
 
 The default adapter thats simply returns ``absolute_url_path()`` is called
 ``default``.
+
 
 Virtual hosting and URL rewriting
 ----------------------------------
