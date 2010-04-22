@@ -1,11 +1,14 @@
 
-plone.cachepurging - Caching proxy purge support for Zope 2
-===========================================================
+.. contents:: Table of Contents
 
-This package provides cache purging for Zope 2 applications. It is inspired by
-(and borrows some code from) `Products.CMFSquidTool`_, but it is not tied to
-Squid. In fact, it is tested mainly with `Varnish`_, though it should also
-work with `Squid`_ and `Enfold Proxy`_.
+
+Introduction
+------------
+
+The ``plone.cachepurging`` package provides cache purging for Zope 2 applications.
+It is inspired by (and borrows some code from) `Products.CMFSquidTool`_, but it 
+is not tied to Squid. In fact, it is tested mainly with `Varnish`_, though it 
+should also work with `Squid`_ and `Enfold Proxy`_.
 
 This package is not tied to Plone. However, if you intend to use it with
 Plone, you probably want to install `plone.app.caching`_, which provides
@@ -14,8 +17,6 @@ Plone-specific configuration and a user interface in Plone's control panel.
 ``plone.cachepurging`` works with Zope 2.12 and later. If you want to use it
 with Zope 2.10, you may be able to do so by installing
 `ZPublisherEventsBackport`_, although this is not a tested configuration.
-
-.. contents:: Table of Contents
 
 
 Installation
