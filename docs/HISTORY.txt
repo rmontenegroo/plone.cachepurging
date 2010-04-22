@@ -1,7 +1,9 @@
 Changelog
-=========
+---------
 
-1.0a1dev (unreleased)
----------------------
 
-- Initial release
+1.0a1 - April 22, 2010
+~~~~~~~~~~~~~~~~~~~~~~
+
+    - Initial release
+      [optilude, newbery]
