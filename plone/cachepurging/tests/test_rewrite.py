@@ -242,6 +242,19 @@ class TestRewrite(unittest.TestCase):
         self.assertEquals(['/VirtualHostBase/http/example.org:81/plone/VirtualHostRoot/foo',
                            '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
                           self.rewriter('/foo'))
+
+    def test_domains_w_different_path_in_request(self):
+        registry = Registry()
+        provideUtility(registry, IRegistry)
+        registry.registerInterface(ICachePurgingSettings)
+        settings = registry.forInterface(ICachePurgingSettings)
+        settings.virtualHosting = True
+        settings.domains = ('http://example.org:81', 'https://example.com:82')
+        
+        self._prepareVHMRequest('/bar', domain='example.com:81', protocol='https')
+        self.assertEquals(['/VirtualHostBase/http/example.org:81/plone/VirtualHostRoot/foo',
+                           '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
+                          self.rewriter('/foo'))
     
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
