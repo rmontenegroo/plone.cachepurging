@@ -67,7 +67,8 @@ class DefaultRewriter(object):
             pathPrefix = '/' + '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
         
         # Path, e.g. /front-page
-        pathPortion = '/' + virtualUrlParts[-1]
+        if not path.startswith('/'):
+            path = '/' + path
         
         paths = []
         for domain in domains:
@@ -78,7 +79,7 @@ class DefaultRewriter(object):
                      'host':    host,
                      'root':    virtualRoot,
                      'prefix':  pathPrefix,
-                     'path':    pathPortion,
+                     'path':    path,
                     }
                 )
         return paths
