@@ -390,9 +390,9 @@ front of Zope are configured:
     Set this to ``True`` to incorporate virtual hosting tokens in the
     PURGE paths. This is applicable in scenario 1 above.
 ``plone.cachepurging.interfaces.ICachePurgingSettings.domains``
-    Set this to a tuple of domains (e.g. 
-    ``('http://example.com`, 'http://www.example.com',)``) if your site is
-    served on multiple domains. This is useful because the virtual hosting
+    Set this to a tuple of domains `including` ports (e.g. 
+    ``('http://example.com:80`, 'http://www.example.com:80',)``) if your site
+    is served on multiple domains. This is useful because the virtual hosting
     URL contains the "external" domain name. If your site is hosted such
     that it can be reached via multiple domains (e.g. ``http://example.com``
     vs. ``http://www.example.com``), the virtual hosting path will be
