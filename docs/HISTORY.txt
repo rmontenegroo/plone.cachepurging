@@ -4,6 +4,10 @@ Changelog
 1.0b2 - unreleased
 ~~~~~~~~~~~~~~~~~~
 
+* Fix package requirements to pull in plone.app.testing as part of the [test]
+  extra. 
+  [esteele]
+
 1.0b1 - December 14, 2010
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 

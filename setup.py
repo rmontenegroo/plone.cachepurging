@@ -3,6 +3,10 @@ import os
 
 version = '1.0b2'
 
+tests_require = ['unittest2',
+                 'plone.app.testing',
+                 ]
+
 setup(name='plone.cachepurging',
       version=version,
       description="Cache purging support for Zope 2 applications",
@@ -34,6 +38,8 @@ setup(name='plone.cachepurging',
           'plone.registry',
           'Zope2',
       ],
-      entry_points="""
-      """,
+      tests_require=tests_require,
+      extras_require={
+        'test': tests_require,
+      },
       )
