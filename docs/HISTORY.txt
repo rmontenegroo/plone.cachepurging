@@ -1,8 +1,8 @@
 Changelog
 ---------
 
-1.0b2 - unreleased
-~~~~~~~~~~~~~~~~~~
+1.0b2 - April 6, 2011
+~~~~~~~~~~~~~~~~~~~~~
 
 * Fix package requirements to pull in plone.app.testing as part of the [test]
   extra. 
