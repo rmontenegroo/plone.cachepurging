@@ -1,3 +1,5 @@
+plone.cachepurging
+==================
 
 .. contents:: Table of Contents
 
