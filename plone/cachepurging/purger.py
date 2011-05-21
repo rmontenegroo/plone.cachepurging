@@ -324,3 +324,14 @@ class Worker(threading.Thread):
                         break
                     time.sleep(1)
         return None # must be stopping!
+
+DEFAULT_PURGER = DefaultPurger()
+
+
+def stopThreads():
+    purger = DEFAULT_PURGER
+    purger.stopThreads()
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(stopThreads)
+del addCleanUp

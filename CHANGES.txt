@@ -4,6 +4,11 @@ Changelog
 1.0.1 - Unreleased
 ------------------
 
+- Register a `zope.testing.cleanup.addCleanUp` function to stop all purge
+  threads. Also make the default purger available as a module global, so the
+  cleanup function can get to it after the ZCA has been torn down.
+  [hannosch]
+
 - Register an atexit handler to stop the purge thread on process shutdown.
   [hannosch]
 

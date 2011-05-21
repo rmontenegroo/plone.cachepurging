@@ -16,7 +16,7 @@
     <subscriber handler=".hooks.purge" />
     
     <!-- Purge queue -->
-    <utility factory=".purger.DefaultPurger" />
+    <utility component=".purger.DEFAULT_PURGER" />
     
     <!-- Make sure we can annotate the request -->
     <class class="ZPublisher.BaseRequest.BaseRequest">
