@@ -11,16 +11,17 @@ Asynchronous purging works as follows:
   thread again waits until a connection can be re-established.
 """
 
-import sys
-import socket
 import httplib
-import urlparse
 import logging
-import time
-import threading
 import Queue
+import socket
+import sys
+import threading
+import time
+import urlparse
 
 from zope.interface import implements
+
 from plone.cachepurging.interfaces import IPurger
 
 logger = logging.getLogger('plone.cachepurging')
