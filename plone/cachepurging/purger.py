@@ -15,6 +15,7 @@ import httplib
 import logging
 import Queue
 import socket
+import ssl
 import sys
 import threading
 import time
@@ -40,7 +41,8 @@ class Connection(httplib.HTTPConnection):
             self.default_port = httplib.HTTPS_PORT
         else:
             raise ValueError("Invalid scheme '%s'" % scheme)
-        httplib.HTTPConnection.__init__(self, host, port, strict)
+        httplib.HTTPConnection.__init__(self, host, port, strict,
+            timeout=timeout)
         self.timeout = timeout
 
     def connect(self):
@@ -48,15 +50,12 @@ class Connection(httplib.HTTPConnection):
             httplib.HTTPConnection.connect(self)
         elif self.scheme == "https":
             # Clone of httplib.HTTPSConnection.connect
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((self.host, self.port))
+            sock = socket.create_connection((self.host, self.port),
+                timeout=self.timeout)
             key_file = cert_file = None
-            ssl = socket.ssl(sock, key_file, cert_file)
-            self.sock = httplib.FakeSocket(sock, ssl)
+            self.sock = ssl.wrap_socket(sock, key_file, cert_file)
         else:
             raise ValueError("Invalid scheme '%s'" % self.scheme)
-        # Once we have connected, set the timeout.
-        self.sock.settimeout(self.timeout)
 
 
 class DefaultPurger(object):

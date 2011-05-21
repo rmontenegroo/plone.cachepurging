@@ -4,6 +4,10 @@ Changelog
 1.0.1 - Unreleased
 ------------------
 
+- Update socket connection code for the purge thread to use Python 2.6 support
+  for passing in a timeout to the create_connection call.
+  [hannosch]
+
 - Disable `purge queue is full` warning in debug mode, where it spammed the
   console.
   [hannosch]
