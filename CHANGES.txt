@@ -4,6 +4,10 @@ Changelog
 1.0.1 - Unreleased
 ------------------
 
+- Disable `purge queue is full` warning in debug mode, where it spammed the
+  console.
+  [hannosch]
+
 - Correct license and update distribution metadata.
   [hannosch]
 

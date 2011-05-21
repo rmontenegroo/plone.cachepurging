@@ -20,6 +20,7 @@ import threading
 import time
 import urlparse
 
+from App.config import getConfiguration
 from zope.interface import implements
 
 from plone.cachepurging.interfaces import IPurger
@@ -83,13 +84,14 @@ class DefaultPurger(object):
             q.put((url, httpVerb), block=False)
             logger.debug('Queued %s' % url)
         except Queue.Full:
-            # Make a loud noise.  Ideally the queue size would be
+            # Make a loud noise. Ideally the queue size would be
             # user-configurable - but the more likely case is that the purge
             # host is down.
-            logger.warning("The purge queue for the URL %s is full - the "
-                           "request will be discarded.  Please check the "
-                           "server is reachable, or disable this purge host",
-                           url)
+            if not getConfiguration().debug_mode:
+                logger.warning("The purge queue for the URL %s is full - the "
+                               "request will be discarded.  Please check the "
+                               "server is reachable, or disable this purge "
+                               "host", url)
 
     def purgeSync(self, url, httpVerb='PURGE'):
         try:
