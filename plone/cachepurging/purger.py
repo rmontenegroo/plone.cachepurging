@@ -2,7 +2,7 @@
 is ZPL licensed.
 
 Asynchronous purging works as follows:
-  
+
 * Each remote host gets a queue and a worker thread.
 
 * Each worker thread manages its own connection.  The queue is not processed
@@ -25,6 +25,7 @@ from plone.cachepurging.interfaces import IPurger
 
 logger = logging.getLogger('plone.cachepurging')
 
+
 class Connection(httplib.HTTPConnection):
     """A connection that can handle either HTTP or HTTPS
     """
@@ -36,7 +37,7 @@ class Connection(httplib.HTTPConnection):
         elif scheme == "https":
             self.default_port = httplib.HTTPS_PORT
         else:
-            raise ValueError, "Invalid scheme '%s'" % (scheme,)
+            raise ValueError("Invalid scheme '%s'" % scheme)
         httplib.HTTPConnection.__init__(self, host, port, strict)
         self.timeout = timeout
 
@@ -51,17 +52,17 @@ class Connection(httplib.HTTPConnection):
             ssl = socket.ssl(sock, key_file, cert_file)
             self.sock = httplib.FakeSocket(sock, ssl)
         else:
-            raise ValueError, "Invalid scheme '%s'" % (self.scheme,)
+            raise ValueError("Invalid scheme '%s'" % self.scheme)
         # Once we have connected, set the timeout.
         self.sock.settimeout(self.timeout)
 
+
 class DefaultPurger(object):
-    """Default purging implementation
-    """
-    
+
     implements(IPurger)
-    
-    def __init__(self, factory=Connection, timeout=30, backlog=200, errorHeaders=('x-squid-error',), http_1_1=True):
+
+    def __init__(self, factory=Connection, timeout=30, backlog=200,
+            errorHeaders=('x-squid-error', ), http_1_1=True):
         self.factory = factory
         self.timeout = timeout
         self.queues = {}
@@ -70,9 +71,7 @@ class DefaultPurger(object):
         self.queueLock = threading.Lock()
         self.errorHeaders = errorHeaders
         self.http_1_1 = http_1_1
-    
-    # Public API
-    
+
     def purgeAsync(self, url, httpVerb='PURGE'):
         (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
         __traceback_info__ = (url, httpVerb, scheme, host,
@@ -90,7 +89,7 @@ class DefaultPurger(object):
                            "request will be discarded.  Please check the "
                            "server is reachable, or disable this purge host",
                            url)
-    
+
     def purgeSync(self, url, httpVerb='PURGE'):
         try:
             conn = self.getConnection(url)
@@ -113,7 +112,7 @@ class DefaultPurger(object):
             logger.debug('Error while purging %s:\n%s' % (url, xerror))
         logger.debug("Completed synchronous purge of %s", url)
         return status, xcache, xerror
-    
+
     def stopThreads(self, wait=False):
         for w in self.workers.itervalues():
             w.stopping = True
@@ -132,17 +131,15 @@ class DefaultPurger(object):
                     logger.warning("Worker thread %s failed to terminate", w)
                     ok = False
         return ok
-    
-    # Internal API between Purger and worker threads
-    
+
     def getConnection(self, url):
         """Creates a new connection - returns a connection object that is
         already connected. Exceptions raised by that connection are not
         trapped.
         """
-        
+
         (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
-        # 
+        #
         # process.
         conn = self.factory(host, scheme=scheme, timeout=self.timeout)
         conn.connect()
@@ -153,7 +150,7 @@ class DefaultPurger(object):
         """Create or retrieve a queue and a worker thread instance for the
         given URL.
         """
-        
+
         (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
         key = (host, scheme)
         if key not in self.queues:
@@ -164,7 +161,8 @@ class DefaultPurger(object):
                                  scheme, host)
                     assert key not in self.workers
                     self.queues[key] = queue = Queue.Queue(self.backlog)
-                    self.workers[key] = worker = Worker(queue, host, scheme, self)
+                    self.workers[key] = worker = Worker(
+                        queue, host, scheme, self)
                     worker.start()
             finally:
                 self.queueLock.release()
@@ -177,11 +175,11 @@ class DefaultPurger(object):
         and ``xerror`` is the contents of the first header found of the
         header list in ``self.errorHeaders``.
         """
-        
+
         (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
         __traceback_info__ = (url, httpVerb, scheme, host,
                               path, params, query, fragment)
-        
+
         if self.http_1_1:
             conn._http_vsn = 11
             conn._http_vsn_str = 'HTTP/1.1'
@@ -192,10 +190,11 @@ class DefaultPurger(object):
             # we use the full url as the purge path, to allow for virtual
             # hosting in squid
             path = url
-        
-        purge_path = urlparse.urlunparse(('','', path, params, query, fragment))
-        logger.debug('making %s request to %s for %s.' % (httpVerb,
-                                                          host, purge_path))
+
+        purge_path = urlparse.urlunparse(
+            ('', '', path, params, query, fragment))
+        logger.debug('making %s request to %s for %s.',
+            httpVerb, host, purge_path)
         conn.putrequest(httpVerb, purge_path, skip_accept_encoding=True)
         conn.endheaders()
         resp = conn.getresponse()
@@ -208,8 +207,10 @@ class DefaultPurger(object):
                 # Break on first found.
                 break
         resp.read()
-        logger.debug("%s of %s: %s %s", httpVerb, url, resp.status, resp.reason)
+        logger.debug("%s of %s: %s %s",
+            httpVerb, url, resp.status, resp.reason)
         return resp, xcache, xerror
+
 
 class Worker(threading.Thread):
     """Worker thread for purging.
@@ -221,7 +222,8 @@ class Worker(threading.Thread):
         self.producer = producer
         self.queue = queue
         self.stopping = False
-        super(Worker, self).__init__(name="PurgeThread for %s://%s" % (scheme, host))
+        super(Worker, self).__init__(
+            name="PurgeThread for %s://%s" % (scheme, host))
 
     def run(self):
         logger.debug("%s starting", self)
@@ -290,7 +292,7 @@ class Worker(threading.Thread):
 
     def getConnection(self, url):
         """Get a connection to the given URL.
-        
+
         Blocks until either a connection is established, or
         we are asked to shut-down.  Includes a simple strategy for
         slowing down the retry rate, retrying from 2 seconds to 2 minutes
@@ -311,5 +313,3 @@ class Worker(threading.Thread):
                         break
                     time.sleep(1)
         return None # must be stopping!
-
-
