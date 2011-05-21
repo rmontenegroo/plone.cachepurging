@@ -4,6 +4,9 @@ Changelog
 1.0.1 - Unreleased
 ------------------
 
+- Register an atexit handler to stop the purge thread on process shutdown.
+  [hannosch]
+
 - Change the reconnect strategy for the purge thread to retry fewer times and
   assume a permanent connection failure after one minute and stop the thread.
   This allows the application process to shutdown cleanly without the purge

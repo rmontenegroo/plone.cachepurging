@@ -11,6 +11,7 @@ Asynchronous purging works as follows:
   thread again waits until a connection can be re-established.
 """
 
+import atexit
 import httplib
 import logging
 import Queue
@@ -227,11 +228,15 @@ class Worker(threading.Thread):
         super(Worker, self).__init__(
             name="PurgeThread for %s://%s" % (scheme, host))
 
+    def stop(self):
+        self.stopping = True
+
     def run(self):
         logger.debug("%s starting", self)
         # Queue should always exist!
         q = self.producer.queues[(self.host, self.scheme)]
         connection = None
+        atexit.register(self.stop)
         try:
             while not self.stopping:
                 item = q.get()
@@ -279,7 +284,7 @@ class Worker(threading.Thread):
                                      'retrying: %s' % (httpVerb, url, e))
                         connection.close()
                         connection = None
-                    except:
+                    except Exception:
                         # All other exceptions are evil - we just disard the
                         # item.  This prevents other logic failures etc being
                         # retried.
