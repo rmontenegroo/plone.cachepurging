@@ -1,31 +1,12 @@
-import os
 from setuptools import setup, find_packages
 
-
-def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-
-
 version = '1.0.1'
-
-long_description = (
-    read('README.txt')
-    + '\n' +
-#    read('plone', 'cachepurging', 'README.txt')
-#    + '\n' +
-    read('CHANGES.txt')
-    + '\n'
-    )
-
-tests_require = ['unittest2',
-                 'plone.app.testing',
-                 ]
 
 setup(name='plone.cachepurging',
       version=version,
       description="Cache purging support for Zope 2 applications",
-      long_description=long_description,
-      # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      long_description=open('README.txt').read() + '\n' +
+                       open('CHANGES.txt').read(),
       classifiers=[
         "Framework :: Plone",
         "Programming Language :: Python",
@@ -34,7 +15,7 @@ setup(name='plone.cachepurging',
       author='Plone Foundation',
       author_email='plone-developers@lists.sourceforge.net',
       url='http://pypi.python.org/pypi/plone.cachepurging',
-      license='GPL',
+      license='GPL version 2',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['plone'],
       include_package_data=True,
@@ -51,8 +32,7 @@ setup(name='plone.cachepurging',
           'plone.registry',
           'Zope2',
       ],
-      tests_require=tests_require,
       extras_require={
-        'test': tests_require,
+        'test': ['plone.app.testing'],
       },
       )
