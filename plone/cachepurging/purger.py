@@ -295,19 +295,23 @@ class Worker(threading.Thread):
     def getConnection(self, url):
         """Get a connection to the given URL.
 
-        Blocks until either a connection is established, or
-        we are asked to shut-down.  Includes a simple strategy for
-        slowing down the retry rate, retrying from 2 seconds to 2 minutes
-        until the connection appears.
+        Blocks until either a connection is established, or we are asked to
+        shut-down. Includes a simple strategy for slowing down the retry rate,
+        retrying from 5 seconds to 20 seconds until the connection appears or
+        we waited a full minute.
         """
-
-        wait_time = 1
+        wait_time = 2.5
         while not self.stopping:
             try:
                 return self.producer.getConnection(url)
-            except socket.error, e:
-                # max wait time is 2 minutes
-                wait_time = min(wait_time * 2, 120)
+            except socket.error as e:
+                wait_time = min(wait_time * 2, 21)
+                if wait_time > 20:
+                    # we waited a full minute, we assume a permanent failure
+                    logger.debug("Error %s connecting to %s - reconnect "
+                                 "failed.", e, url)
+                    self.stopping = True
+                    break
                 logger.debug("Error %s connecting to %s - will "
                              "retry in %d second(s)", e, url, wait_time)
                 for i in xrange(wait_time):

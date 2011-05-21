@@ -4,6 +4,12 @@ Changelog
 1.0.1 - Unreleased
 ------------------
 
+- Change the reconnect strategy for the purge thread to retry fewer times and
+  assume a permanent connection failure after one minute and stop the thread.
+  This allows the application process to shutdown cleanly without the purge
+  thread being stuck forever.
+  [hannosch]
+
 - Update socket connection code for the purge thread to use Python 2.6 support
   for passing in a timeout to the create_connection call.
   [hannosch]
