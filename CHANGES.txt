@@ -4,6 +4,10 @@ Changelog
 1.0.2 - unreleased
 ------------------
 
+- Cast wait_time to int before calling xrange. This fixes
+  "TypeError: integer argument expected, got float" error.
+  [vincentfretin]
+
 
 1.0.1 - 2011-05-21
 ------------------

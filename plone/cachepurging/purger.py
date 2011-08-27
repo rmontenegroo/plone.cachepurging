@@ -310,7 +310,7 @@ class Worker(threading.Thread):
             try:
                 return self.producer.getConnection(url)
             except socket.error as e:
-                wait_time = min(wait_time * 2, 21)
+                wait_time = int(min(wait_time * 2, 21))
                 if wait_time > 20:
                     # we waited a full minute, we assume a permanent failure
                     logger.debug("Error %s connecting to %s - reconnect "
