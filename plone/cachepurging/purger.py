@@ -16,7 +16,6 @@ import httplib
 import logging
 import Queue
 import socket
-import ssl
 import sys
 import threading
 import time
@@ -50,6 +49,7 @@ class Connection(httplib.HTTPConnection):
         if self.scheme == "http":
             httplib.HTTPConnection.connect(self)
         elif self.scheme == "https":
+            import ssl # import here in case python has no ssl support
             # Clone of httplib.HTTPSConnection.connect
             sock = socket.create_connection((self.host, self.port),
                 timeout=self.timeout)
