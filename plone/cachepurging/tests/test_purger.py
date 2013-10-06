@@ -14,7 +14,7 @@ from plone.cachepurging.purger import DefaultPurger
 
 # Define a test HTTP server that returns canned responses
 
-SERVER_PORT = os.environ.get('ZSERVER_PORT', 8765)
+SERVER_PORT = int(os.environ.get('ZSERVER_PORT', 8765))
 
 
 class TestHandler(BaseHTTPRequestHandler):
