@@ -18,8 +18,8 @@ class TestTraversablePaths(unittest.TestCase):
         context = FauxTraversable()
         paths = TraversablePurgePaths(context)
 
-        self.assertEquals(['/foo'], paths.getRelativePaths())
-        self.assertEquals([], paths.getAbsolutePaths())
+        self.assertEqual(['/foo'], paths.getRelativePaths())
+        self.assertEqual([], paths.getAbsolutePaths())
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
