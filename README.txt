@@ -238,7 +238,7 @@ example, here is some code to purge the parent of the purged object::
     from z3c.caching.purge import Purge
 
     @adapter(IMyContent, IPurgeEvent)
-    def purgeParent(object, IPurgeEvent)
+    def purgeParent(object, IPurgeEvent):
         parent = object.__parent__
         if parent is not None:
             notify(Purge(parent))
