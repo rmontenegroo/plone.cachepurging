@@ -24,12 +24,15 @@ setup(name='plone.cachepurging',
           'setuptools',
           'five.globalrequest',
           'plone.registry',
+          'z3c.caching'
           'zope.annotation',
           'zope.component',
           'zope.event',
           'zope.i18nmessageid',
           'zope.interface',
           'zope.lifecycleevent',
+          'zope.schema'
+          'zope.testing'  # on purger.py not on tests
           'Zope2',
       ],
       extras_require={
