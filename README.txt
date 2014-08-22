@@ -8,8 +8,8 @@ Introduction
 ------------
 
 The ``plone.cachepurging`` package provides cache purging for Zope 2 applications.
-It is inspired by (and borrows some code from) `Products.CMFSquidTool`_, but it 
-is not tied to Squid. In fact, it is tested mainly with `Varnish`_, though it 
+It is inspired by (and borrows some code from) `Products.CMFSquidTool`_, but it
+is not tied to Squid. In fact, it is tested mainly with `Varnish`_, though it
 should also work with `Squid`_ and `Enfold Proxy`_.
 
 This package is not tied to Plone. However, if you intend to use it with
@@ -64,7 +64,7 @@ The simplest way to initiate a purge is to raise a ``Purge`` event::
 
     from z3c.caching.purge import Purge
     from zope.event import notify
-    
+
     notify(Purge(context))
 
 Notice how we are actually importing from ``z3c.caching`` here. That package
@@ -75,7 +75,7 @@ This is a safer dependency, as it in turn depends only on a small set of
 core Zope Toolkit packages.
 
 Presuming ``plone.cachepurging`` is installed, firing the event above will:
- 
+
 * Check whether caching is enabled and configured. If not, it will do nothing.
 * Look up paths to purge for the given object. This is done via zero or more
   ``IPurgePaths`` adapters. See "Which URLs get purged?" below.
@@ -114,24 +114,24 @@ snippet adapted from the ``plone.cachepurging.purge`` view::
         from plone.cachepurging.utils import getPathsToPurge
         from plone.cachepurging.utils import getURLsToPurge
         from plone.cachepurging.utils import isCachePurgingEnabled
-        
+
         ...
 
         if not isCachePurgingEnabled():
             return 'Caching not enabled'
-        
+
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ICachePurgingSettings)
-        
+
         purger = getUtility(IPurger)
-        
+
         out = StringIO()
-        
+
         for path in getPathsToPurge(self.context, self.request):
             for url in getURLsToPurge(path, settings.cachingProxies):
                 status, xcache, xerror = purger.purgeSync(url)
                 print >>out, "Purged", url, "Status", status, "X-Cache", xcache, "Error:", xerror
-        
+
         return out.getvalue()
 
 Here, we:
@@ -141,28 +141,28 @@ Here, we:
 
 * Look up the registry and cache purging settings to find the list of
   caching proxies.
-  
+
 * Obtain an ``IPurger`` utility. This has three main methods::
 
     def purgeAsync(url, httpVerb='PURGE'):
-        """Send a PURGE request to a particular URL asynchronously in a 
+        """Send a PURGE request to a particular URL asynchronously in a
         worker thread.
         """
-    
+
     def purgeSync(url, httpVerb='PURGE'):
         """Send a PURGE request to a particular URL synchronosly.
-        
+
         Returns a triple ``(status, xcache, xerror)`` where ``status`` is
         the HTTP status of the purge request, ``xcache`` is the contents of
         the ``x-cache`` response header, and ``x-error`` is the contents
         of the first header found from the list of headers in
         ``errorHeaders``.
         """
-    
+
     def stopThreads(wait=False):
         """Attempts to stop all threads.  Threads stop immediately after
         the current item is being processed.
-        
+
         Returns True if successful, or False if threads are still running
         after waiting 5 seconds for each one.
         """
@@ -264,7 +264,7 @@ The ``IPurgePaths`` interface looks like this::
 
     class IPurgePaths(Interface):
         """Return paths to send as PURGE requests for a given object.
-    
+
         The purging hook will look up named adapters from the objects sent to
         the purge queue (usually by an IPurgeEvent being fired) to this interface.
         The name is not significant, but is used to allow multiple implementations
@@ -272,20 +272,20 @@ The ``IPurgePaths`` interface looks like this::
         normally be unique, prefixed with the dotted name of the package to which
         they belong.
         """
-    
+
         def getRelativePaths():
             """Return a list of paths that should be purged. The paths should be
             relative to the virtual hosting root, i.e. they should start with a
             '/'.
-        
+
             These paths will be rewritten to incorporate virtual hosting if
             necessary.
             """
-        
+
         def getAbsolutePaths():
             """Return a list of paths that should be purged. The paths should be
             relative to the domain root, i.e. they should start with a '/'.
-        
+
             These paths will *not* be rewritten to incorporate virtual hosting.
             """
 
@@ -314,16 +314,16 @@ like this::
         """Purge /view for any content object with the content object's
         default URL
         """
-    
+
         implements(IPurgePaths)
         adapts(IContentish)
-    
+
         def __init__(self, context):
             self.context = context
-        
+
         def getRelativePaths(self):
             return [self.context.absolute_url_path() + '/view']
-    
+
         def getAbsolutePaths(self):
             return []
 
@@ -392,7 +392,7 @@ front of Zope are configured:
     Set this to ``True`` to incorporate virtual hosting tokens in the
     PURGE paths. This is applicable in scenario 1 above.
 ``plone.cachepurging.interfaces.ICachePurgingSettings.domains``
-    Set this to a tuple of domains `including` ports (e.g. 
+    Set this to a tuple of domains `including` ports (e.g.
     ``('http://example.com:80`, 'http://www.example.com:80',)``) if your site
     is served on multiple domains. This is useful because the virtual hosting
     URL contains the "external" domain name. If your site is hosted such
@@ -400,7 +400,7 @@ front of Zope are configured:
     vs. ``http://www.example.com``), the virtual hosting path will be
     different depending on which one the user happened to use. Most likely,
     you will want to purge *both* variants.
-    
+
     Note that it is probably better to normalise your paths in the fronting
     web server, so that Zope only ever sees a single external domain. If you
     only have one domain, or if the ``virtualHosting`` option is false, you do

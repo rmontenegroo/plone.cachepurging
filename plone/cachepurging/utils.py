@@ -11,12 +11,12 @@ from plone.cachepurging.interfaces import IPurgePathRewriter
 def isCachePurgingEnabled(registry=None):
     """Return True if caching is enabled
     """
-    
+
     if registry is None:
         registry = queryUtility(IRegistry)
     if registry is None:
         return False
-    
+
     settings = registry.forInterface(ICachePurgingSettings, check=False)
     return (settings.enabled and bool(settings.cachingProxies))
 
@@ -25,9 +25,9 @@ def getPathsToPurge(context, request):
     the object and yield them one by one. An IPurgePathRewriter adapter may
     be used to rewrite the paths.
     """
-    
+
     rewriter = IPurgePathRewriter(request, None)
-    
+
     for name, pathProvider in getAdapters((context,), IPurgePaths):
         # add relative paths, which are rewritten
         relativePaths = pathProvider.getRelativePaths()
@@ -39,7 +39,7 @@ def getPathsToPurge(context, request):
                     rewrittenPaths = rewriter(relativePath) or [] # None -> []
                     for rewrittenPath in rewrittenPaths:
                         yield rewrittenPath
-        
+
         # add absoute paths, which are not
         absolutePaths = pathProvider.getAbsolutePaths()
         if absolutePaths:
@@ -50,10 +50,10 @@ def getURLsToPurge(path, proxies):
     """Yield full purge URLs for a given path, taking the caching proxies
     listed in the registry into account.
     """
-    
+
     if not path.startswith('/'):
         path = '/' + path
-    
+
     for proxy in proxies:
         if proxy.endswith('/'):
             proxy = proxy[:-1]
