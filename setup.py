@@ -31,9 +31,9 @@ setup(name='plone.cachepurging',
           'zope.i18nmessageid',
           'zope.interface',
           'zope.lifecycleevent',
-          'zope.schema'
-          'zope.testing'  # on purger.py not on tests
-          'Zope2',
+          'zope.schema',
+          'zope.testing',
+          'Zope2'
       ],
       extras_require={
         'test': ['plone.app.testing'],
