@@ -24,7 +24,7 @@ setup(name='plone.cachepurging',
           'setuptools',
           'five.globalrequest',
           'plone.registry',
-          'z3c.caching'
+          'z3c.caching',
           'zope.annotation',
           'zope.component',
           'zope.event',
