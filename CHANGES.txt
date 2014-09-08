@@ -1,10 +1,11 @@
 Changelog
 =========
 
-1.0.6 (unreleased)
+1.0.6 (2014-09-08)
 ------------------
 
-- Nothing changed yet.
+- Add undeclared dependencies
+  [gforcada]
 
 
 1.0.5 (2013-12-07)
