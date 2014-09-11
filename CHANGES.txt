@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.7 (unreleased)
+1.0.7 (2014-09-11)
 ------------------
 
 - Fix installation issues due to missing commas in setup.py
