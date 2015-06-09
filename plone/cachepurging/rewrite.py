@@ -44,12 +44,11 @@ class DefaultRewriter(object):
 
         # Make sure request is compliant
         if (not virtualUrlParts
-         or not virtualRootPhysicalPath
-         or not isinstance(virtualUrlParts, (list,tuple,))
-         or not isinstance(virtualRootPhysicalPath, (list,tuple,))
-         or len(virtualUrlParts) < 2
-         or len(virtualUrlParts) > 3
-        ):
+                or not virtualRootPhysicalPath
+                or not isinstance(virtualUrlParts, (list, tuple,))
+                or not isinstance(virtualRootPhysicalPath, (list, tuple,))
+                or len(virtualUrlParts) < 2
+                or len(virtualUrlParts) > 3):
             return [path]
 
         domains = settings.domains
@@ -67,19 +66,18 @@ class DefaultRewriter(object):
             pathPrefix = '/' + '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
 
         # Path, e.g. /front-page
-        if not path.startswith('/'):
+        if len(path) > 0 and not path.startswith('/'):
             path = '/' + path
 
         paths = []
         for domain in domains:
             scheme, host = urlparse.urlparse(domain)[:2]
             paths.append(
-                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/VirtualHostRoot%(prefix)s%(path)s' %
-                    {'scheme':  scheme,
-                     'host':    host,
-                     'root':    virtualRoot,
-                     'prefix':  pathPrefix,
-                     'path':    path,
-                    }
+                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/VirtualHostRoot%(prefix)s%(path)s' % {
+                    'scheme':  scheme,
+                    'host':    host,
+                    'root':    virtualRoot,
+                    'prefix':  pathPrefix,
+                    'path':    path}
                 )
         return paths

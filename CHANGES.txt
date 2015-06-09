@@ -4,7 +4,10 @@ Changelog
 1.0.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- correctly be able to purge empty path(root of site). Previously, /
+  was always appended to url so one potential path of the resource
+  in varnish would never get purged--sometimes the most important, the homepage.
+  [vangheem]
 
 
 1.0.7 (2014-09-11)

@@ -25,17 +25,20 @@ class TestRewrite(unittest.TestCase):
     def tearDown(self):
         zope.component.testing.tearDown()
 
-    def _prepareVHMRequest(self, path, domain='example.com', root='/plone', prefix='', protocol='http'):
+    def _prepareVHMRequest(self, path, domain='example.com', root='/plone', prefix='',
+                           protocol='http'):
         translatedPrefix = '/'.join(['_vh_%s' % p for p in prefix.split('/')])
 
         self.request['URL'] = '%s://%s%s%s' % (protocol, domain, prefix, path,)
         self.request['ACTUAL_URL'] = '%s://%s%s%s' % (protocol, domain, prefix, path,)
         self.request['SERVER_URL'] = '%s://%s' % (protocol, domain,)
-        self.request['PATH_INFO'] = '/VirtualHostBase/%s/%s:80%s/VirtualHostRoot%s%s' % (protocol, domain, root, translatedPrefix, path,)
+        self.request['PATH_INFO'] = '/VirtualHostBase/%s/%s:80%s/VirtualHostRoot%s%s' % (
+            protocol, domain, root, translatedPrefix, path,)
         self.request['VIRTUAL_URL'] = '%s://%s%s' % (protocol, domain, path)
 
         if prefix:
-            self.request['VIRTUAL_URL_PARTS'] = ('%s://%s' % (protocol, domain,), prefix[1:], path[1:])
+            self.request['VIRTUAL_URL_PARTS'] = (
+                '%s://%s' % (protocol, domain,), prefix[1:], path[1:])
         else:
             self.request['VIRTUAL_URL_PARTS'] = ('%s://%s' % (protocol, domain,), path[1:])
 
@@ -134,7 +137,7 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('/foo')
         self.assertEqual(['/VirtualHostBase/http/example.com/plone/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                         self.rewriter('/foo'))
 
     def test_virtual_root_is_app_root(self):
         registry = Registry()
@@ -146,7 +149,7 @@ class TestRewrite(unittest.TestCase):
         self._prepareVHMRequest('/foo', root='/')
 
         self.assertEqual(['/VirtualHostBase/http/example.com/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                         self.rewriter('/foo'))
 
     def test_virtual_root_is_deep(self):
         registry = Registry()
@@ -158,7 +161,7 @@ class TestRewrite(unittest.TestCase):
         self._prepareVHMRequest('/foo', root='/bar/plone')
 
         self.assertEqual(['/VirtualHostBase/http/example.com/bar/plone/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                         self.rewriter('/foo'))
 
     def test_inside_out_hosting(self):
         registry = Registry()
@@ -169,8 +172,22 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('/foo', root='/bar/plone', prefix='/foo/bar')
 
-        self.assertEqual(['/VirtualHostBase/http/example.com/bar/plone/VirtualHostRoot/_vh_foo/_vh_bar/foo'],
-                          self.rewriter('/foo'))
+        self.assertEqual(
+            ['/VirtualHostBase/http/example.com/bar/plone/VirtualHostRoot/_vh_foo/_vh_bar/foo'],
+            self.rewriter('/foo'))
+
+    def test_inside_out_hosting_root_empty_path(self):
+        registry = Registry()
+        provideUtility(registry, IRegistry)
+        registry.registerInterface(ICachePurgingSettings)
+        settings = registry.forInterface(ICachePurgingSettings)
+        settings.virtualHosting = True
+
+        self._prepareVHMRequest('/', root='/plone', prefix='/plone')
+
+        self.assertEqual(
+            ['/VirtualHostBase/http/example.com/plone/VirtualHostRoot/_vh_plone'],
+            self.rewriter(''))
 
     def test_virtual_path_is_root(self):
         registry = Registry()
@@ -182,7 +199,7 @@ class TestRewrite(unittest.TestCase):
         self._prepareVHMRequest('/', root='/plone')
 
         self.assertEqual(['/VirtualHostBase/http/example.com/plone/VirtualHostRoot/'],
-                          self.rewriter('/'))
+                         self.rewriter('/'))
 
     def test_virtual_path_is_empty(self):
         registry = Registry()
@@ -193,8 +210,8 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('', root='/plone')
 
-        self.assertEqual(['/VirtualHostBase/http/example.com/plone/VirtualHostRoot/'],
-                          self.rewriter(''))
+        self.assertEqual(['/VirtualHostBase/http/example.com/plone/VirtualHostRoot'],
+                         self.rewriter(''))
 
     def test_virtual_path_is_deep(self):
         registry = Registry()
@@ -206,7 +223,7 @@ class TestRewrite(unittest.TestCase):
         self._prepareVHMRequest('/foo/bar', root='/plone')
 
         self.assertEqual(['/VirtualHostBase/http/example.com/plone/VirtualHostRoot/foo/bar'],
-                          self.rewriter('/foo/bar'))
+                         self.rewriter('/foo/bar'))
 
     def test_nonstandard_port(self):
         registry = Registry()
@@ -217,7 +234,7 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('/foo', domain='example.com:81')
         self.assertEqual(['/VirtualHostBase/http/example.com:81/plone/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                         self.rewriter('/foo'))
 
     def test_https(self):
         registry = Registry()
@@ -228,7 +245,7 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('/foo', domain='example.com:81', protocol='https')
         self.assertEqual(['/VirtualHostBase/https/example.com:81/plone/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                         self.rewriter('/foo'))
 
     def test_domains(self):
         registry = Registry()
@@ -240,8 +257,8 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('/foo', domain='example.com:81', protocol='https')
         self.assertEqual(['/VirtualHostBase/http/example.org:81/plone/VirtualHostRoot/foo',
-                           '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                          '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
+                         self.rewriter('/foo'))
 
     def test_domains_w_different_path_in_request(self):
         registry = Registry()
@@ -253,8 +270,8 @@ class TestRewrite(unittest.TestCase):
 
         self._prepareVHMRequest('/bar', domain='example.com:81', protocol='https')
         self.assertEqual(['/VirtualHostBase/http/example.org:81/plone/VirtualHostRoot/foo',
-                           '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
-                          self.rewriter('/foo'))
+                          '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
+                         self.rewriter('/foo'))
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
