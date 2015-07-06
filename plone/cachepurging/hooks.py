@@ -64,6 +64,7 @@ def purge(event):
         return
 
     settings = registry.forInterface(ICachePurgingSettings, check=False)
-    for path in paths:
-        for url in getURLsToPurge(path, settings.cachingProxies):
-            purger.purgeAsync(url)
+    if settings.cachingProxies:
+        for path in paths:
+            for url in getURLsToPurge(path, settings.cachingProxies):
+                purger.purgeAsync(url)
