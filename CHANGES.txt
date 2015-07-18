@@ -4,7 +4,7 @@ Changelog
 1.0.9 (unreleased)
 ------------------
 
-- do not iterate on settings.cachingProxies when there are no.
+- Do not iterate on settings.cachingProxies when there are no.
   [gotcha]
 
 
