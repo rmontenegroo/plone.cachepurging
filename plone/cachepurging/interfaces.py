@@ -3,7 +3,7 @@ from zope import schema
 
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('plone.cachepurging')
+_ = MessageFactory('plone')
 
 class ICachePurgingSettings(Interface):
     """Settings used by the purging algorithm.
