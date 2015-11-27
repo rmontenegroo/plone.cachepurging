@@ -5,8 +5,8 @@ version = '1.0.10.dev0'
 setup(name='plone.cachepurging',
       version=version,
       description="Cache purging support for Zope 2 applications",
-      long_description=open('README.txt').read() + '\n' +
-                       open('CHANGES.txt').read(),
+      long_description=(open('README.rst').read() + '\n' +
+                        open('CHANGES.rst').read()),
       classifiers=[
         "Framework :: Plone",
         "Programming Language :: Python",
