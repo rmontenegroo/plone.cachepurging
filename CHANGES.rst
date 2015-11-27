@@ -4,8 +4,11 @@ Changelog
 1.0.10 (unreleased)
 -------------------
 
-- Change i18n_domain to "plone"
+Fixes:
+
+- Changed i18n_domain to "plone".
   [staeff]
+
 
 1.0.9 (2015-07-18)
 ------------------
