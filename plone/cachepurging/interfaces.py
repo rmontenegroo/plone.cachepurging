@@ -20,7 +20,7 @@ class ICachePurgingSettings(Interface):
     cachingProxies = schema.Tuple(
             title=_(u"Caching proxies"),
             description=_(u"Provide the URLs of each proxy to which PURGE "
-                          u"requests shoudl be sent."),
+                          u"requests should be sent."),
             value_type=schema.URI(),
         )
 
