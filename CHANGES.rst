@@ -10,7 +10,8 @@ New:
 
 Fixes:
 
-- *add item here*
+- Fix typo
+  [ale-rt]
 
 
 1.0.10 (2015-11-28)
