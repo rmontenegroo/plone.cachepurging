@@ -4,13 +4,9 @@ Changelog
 1.0.11 (unreleased)
 -------------------
 
-New:
-
-- *add item here*
-
 Fixes:
 
-- Fix typo
+- Fixed typo.
   [ale-rt]
 
 
