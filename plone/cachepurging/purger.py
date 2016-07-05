@@ -22,7 +22,7 @@ import time
 import urlparse
 
 from App.config import getConfiguration
-from zope.interface import implements
+from zope.interface import implementer
 
 from plone.cachepurging.interfaces import IPurger
 
@@ -59,9 +59,8 @@ class Connection(httplib.HTTPConnection):
             raise ValueError("Invalid scheme '%s'" % self.scheme)
 
 
+@implementer(IPurger)
 class DefaultPurger(object):
-
-    implements(IPurger)
 
     def __init__(self, factory=Connection, timeout=30, backlog=200,
             errorHeaders=('x-squid-error', ), http_1_1=True):

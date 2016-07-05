@@ -1,6 +1,6 @@
 import urlparse
 
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 from zope.component import adapts, queryUtility
 
 from plone.registry.interfaces import IRegistry
@@ -8,11 +8,10 @@ from plone.registry.interfaces import IRegistry
 from plone.cachepurging.interfaces import IPurgePathRewriter
 from plone.cachepurging.interfaces import ICachePurgingSettings
 
+@implementer(IPurgePathRewriter)
 class DefaultRewriter(object):
     """Default rewriter, which is aware of virtual hosting
     """
-
-    implements(IPurgePathRewriter)
     adapts(Interface)
 
     def __init__(self, request):
