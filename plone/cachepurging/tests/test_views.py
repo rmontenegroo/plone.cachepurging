@@ -1,7 +1,7 @@
 import unittest
 import zope.component.testing
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.component import adapts
 from zope.component import adapter
 from zope.component import provideUtility
@@ -82,8 +82,8 @@ class TestPurgeImmediately(unittest.TestCase):
         self.settings.enabled = True
         self.settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurgePaths)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
             adapts(FauxContext)
 
             def __init__(self, context):
@@ -97,8 +97,8 @@ class TestPurgeImmediately(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths, name="test1")
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def purgeSync(self, url, httpVerb='PURGE'):
                 return "200 OK", "cached", None

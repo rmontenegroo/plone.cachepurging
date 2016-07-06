@@ -1,12 +1,12 @@
 import unittest
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from plone.cachepurging.paths import TraversablePurgePaths
 from OFS.interfaces import ITraversable
 
+@implementer(ITraversable)
 class FauxTraversable(object):
-    implements(ITraversable)
 
     def virtual_url_path(self):
         return 'foo'
