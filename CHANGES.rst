@@ -4,13 +4,18 @@ Changelog
 1.0.12 (unreleased)
 -------------------
 
-New:
+Breaking changes:
 
 - *add item here*
 
-Fixes:
+New features:
 
 - *add item here*
+
+Bug fixes:
+
+- Code-Style: isort, utf8-headers, zca-decorators, manual cleanup.
+  [jensens]
 
 
 1.0.11 (2016-01-08)

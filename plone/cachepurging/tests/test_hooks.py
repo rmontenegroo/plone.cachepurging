@@ -11,14 +11,14 @@ from z3c.caching.purge import Purge
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import provideAdapter
 from zope.component import provideHandler
 from zope.component import provideUtility
 from zope.event import notify
 from zope.globalrequest import setRequest
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from ZPublisher.pubevents import PubSuccess
 
 import unittest
@@ -55,9 +55,9 @@ class TestQueueHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -89,9 +89,9 @@ class TestQueueHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -116,9 +116,9 @@ class TestQueueHandler(unittest.TestCase):
         alsoProvides(request, IAttributeAnnotatable)
         setRequest(request)
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -150,9 +150,9 @@ class TestQueueHandler(unittest.TestCase):
         settings.enabled = False
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -204,9 +204,9 @@ class TestQueueHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -246,8 +246,8 @@ class TestPurgeHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def __init__(self):
                 self.purged = []
@@ -274,8 +274,8 @@ class TestPurgeHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def __init__(self):
                 self.purged = []
@@ -304,8 +304,8 @@ class TestPurgeHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def __init__(self):
                 self.purged = []
@@ -327,8 +327,8 @@ class TestPurgeHandler(unittest.TestCase):
         IAnnotations(request)['plone.cachepurging.urls'] = set(
             ['/foo', '/bar'])
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def __init__(self):
                 self.purged = []
@@ -358,8 +358,8 @@ class TestPurgeHandler(unittest.TestCase):
         settings.enabled = False
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def __init__(self):
                 self.purged = []
@@ -409,8 +409,8 @@ class TestPurgeHandler(unittest.TestCase):
         settings.enabled = True
         settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def __init__(self):
                 self.purged = []
@@ -423,8 +423,10 @@ class TestPurgeHandler(unittest.TestCase):
 
         notify(PubSuccess(request))
 
-        self.assertEqual(['http://localhost:1234/foo', 'http://localhost:1234/bar'],
-                         purger.purged)
+        self.assertEqual(
+            ['http://localhost:1234/foo', 'http://localhost:1234/bar'],
+            purger.purged
+        )
 
 
 def test_suite():

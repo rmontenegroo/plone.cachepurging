@@ -7,9 +7,11 @@ from plone.registry.fieldfactory import persistentFieldAdapter
 from plone.registry.interfaces import IRegistry
 from z3c.caching.interfaces import IPurgePaths
 from zope.component import adapts
+from zope.component import adapter
 from zope.component import provideAdapter
 from zope.component import provideUtility
 from zope.interface import implements
+from zope.interface import implementer
 
 import unittest
 import zope.component.testing
@@ -101,9 +103,9 @@ class TestGetPathsToPurge(unittest.TestCase):
 
     def test_empty_relative_paths(self):
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -120,9 +122,9 @@ class TestGetPathsToPurge(unittest.TestCase):
             [], list(utils.getPathsToPurge(self.context, self.request)))
 
     def test_no_rewriter(self):
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -139,9 +141,9 @@ class TestGetPathsToPurge(unittest.TestCase):
                          list(utils.getPathsToPurge(self.context, self.request)))
 
     def test_test_rewriter(self):
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -154,6 +156,8 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths, name="test1")
 
+        @implementer(IPurgePathRewriter)
+        @adapter(FauxRequest)
         class DefaultRewriter(object):
             implements(IPurgePathRewriter)
             adapts(FauxRequest)
@@ -172,9 +176,9 @@ class TestGetPathsToPurge(unittest.TestCase):
                          list(utils.getPathsToPurge(self.context, self.request)))
 
     def test_multiple_purge_paths(self):
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths1(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -187,9 +191,9 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths1, name="test1")
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths2(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -202,9 +206,9 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths2, name="test2")
 
+        @implementer(IPurgePathRewriter)
+        @adapter(FauxRequest)
         class DefaultRewriter(object):
-            implements(IPurgePathRewriter)
-            adapts(FauxRequest)
 
             def __init__(self, request):
                 self.request = request
@@ -214,9 +218,19 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(DefaultRewriter)
 
-        self.assertEqual(['/vhm1/foo', '/vhm2/foo', '/vhm1/bar', '/vhm2/bar', '/baz',
-                          '/vhm1/foo/view', '/vhm2/foo/view', '/quux'],
-                         list(utils.getPathsToPurge(self.context, self.request)))
+        self.assertEqual(
+            [
+                '/vhm1/foo',
+                '/vhm2/foo',
+                '/vhm1/bar',
+                '/vhm2/bar',
+                '/baz',
+                '/vhm1/foo/view',
+                '/vhm2/foo/view',
+                '/quux'
+            ],
+            list(utils.getPathsToPurge(self.context, self.request))
+        )
 
     def test_rewriter_abort(self):
         class FauxPurgePaths1(object):
@@ -234,9 +248,9 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths1, name="test1")
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths2(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -249,9 +263,9 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths2, name="test2")
 
+        @implementer(IPurgePathRewriter)
+        @adapter(FauxRequest)
         class DefaultRewriter(object):
-            implements(IPurgePathRewriter)
-            adapts(FauxRequest)
 
             def __init__(self, request):
                 self.request = request
@@ -261,8 +275,10 @@ class TestGetPathsToPurge(unittest.TestCase):
 
         provideAdapter(DefaultRewriter)
 
-        self.assertEqual(['/baz', '/quux'],
-                         list(utils.getPathsToPurge(self.context, self.request)))
+        self.assertEqual(
+            ['/baz', '/quux'],
+            list(utils.getPathsToPurge(self.context, self.request))
+        )
 
 
 class TestGetURLsToPurge(unittest.TestCase):
@@ -271,12 +287,26 @@ class TestGetURLsToPurge(unittest.TestCase):
         self.assertEqual([], list(utils.getURLsToPurge('/foo', [])))
 
     def test_absolute_path(self):
-        self.assertEqual(['http://localhost:1234/foo/bar', 'http://localhost:2345/foo/bar'],
-                         list(utils.getURLsToPurge('/foo/bar', ['http://localhost:1234', 'http://localhost:2345/'])))
+        self.assertEqual(
+            ['http://localhost:1234/foo/bar', 'http://localhost:2345/foo/bar'],
+            list(
+                utils.getURLsToPurge(
+                    '/foo/bar',
+                    ['http://localhost:1234', 'http://localhost:2345/']
+                )
+            )
+        )
 
     def test_relative_path(self):
-        self.assertEqual(['http://localhost:1234/foo/bar', 'http://localhost:2345/foo/bar'],
-                         list(utils.getURLsToPurge('foo/bar', ['http://localhost:1234', 'http://localhost:2345/'])))
+        self.assertEqual(
+            ['http://localhost:1234/foo/bar', 'http://localhost:2345/foo/bar'],
+            list(
+                utils.getURLsToPurge(
+                    'foo/bar',
+                    ['http://localhost:1234', 'http://localhost:2345/']
+                )
+            )
+        )
 
 
 def test_suite():

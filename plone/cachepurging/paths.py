@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from OFS.interfaces import ITraversable
 from z3c.caching.interfaces import IPurgePaths
-from zope.component import adapts
-from zope.interface import implements
+from zope.component import adapter
+from zope.interface import implementer
 
 
+@implementer(IPurgePaths)
+@adapter(ITraversable)
 class TraversablePurgePaths(object):
     """Default purge for OFS.Traversable-style objects
     """
-
-    implements(IPurgePaths)
-    adapts(ITraversable)
 
     def __init__(self, context):
         self.context = context

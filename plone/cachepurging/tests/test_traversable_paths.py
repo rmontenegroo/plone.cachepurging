@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from OFS.interfaces import ITraversable
 from plone.cachepurging.paths import TraversablePurgePaths
-from zope.interface import implements
+from zope.interface import implementer
 
 import unittest
 
 
+@implementer(ITraversable)
 class FauxTraversable(object):
-    implements(ITraversable)
 
     def virtual_url_path(self):
         return 'foo'

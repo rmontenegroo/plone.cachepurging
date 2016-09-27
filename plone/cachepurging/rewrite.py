@@ -2,20 +2,19 @@
 from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.interfaces import IPurgePathRewriter
 from plone.registry.interfaces import IRegistry
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import queryUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 import urlparse
 
 
+@implementer(IPurgePathRewriter)
+@adapter(Interface)
 class DefaultRewriter(object):
     """Default rewriter, which is aware of virtual hosting
     """
-
-    implements(IPurgePathRewriter)
-    adapts(Interface)
 
     def __init__(self, request):
         self.request = request
@@ -45,12 +44,14 @@ class DefaultRewriter(object):
         virtualRootPhysicalPath = request.get('VirtualRootPhysicalPath')
 
         # Make sure request is compliant
-        if (not virtualUrlParts
-                or not virtualRootPhysicalPath
-                or not isinstance(virtualUrlParts, (list, tuple,))
-                or not isinstance(virtualRootPhysicalPath, (list, tuple,))
-                or len(virtualUrlParts) < 2
-                or len(virtualUrlParts) > 3):
+        if (
+            not virtualUrlParts or
+            not virtualRootPhysicalPath or
+            not isinstance(virtualUrlParts, (list, tuple,)) or
+            not isinstance(virtualRootPhysicalPath, (list, tuple,)) or
+            len(virtualUrlParts) < 2 or
+            len(virtualUrlParts) > 3
+        ):
             return [path]
 
         domains = settings.domains
@@ -76,11 +77,13 @@ class DefaultRewriter(object):
         for domain in domains:
             scheme, host = urlparse.urlparse(domain)[:2]
             paths.append(
-                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/VirtualHostRoot%(prefix)s%(path)s' % {
-                    'scheme':  scheme,
-                    'host':    host,
-                    'root':    virtualRoot,
-                    'prefix':  pathPrefix,
-                    'path':    path}
+                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/'
+                'VirtualHostRoot%(prefix)s%(path)s' % {
+                    'scheme': scheme,
+                    'host': host,
+                    'root': virtualRoot,
+                    'prefix': pathPrefix,
+                    'path': path
+                }
             )
         return paths

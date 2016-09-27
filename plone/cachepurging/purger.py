@@ -14,7 +14,7 @@ Asynchronous purging works as follows:
 
 from App.config import getConfiguration
 from plone.cachepurging.interfaces import IPurger
-from zope.interface import implements
+from zope.interface import implementer
 from zope.testing.cleanup import addCleanUp
 
 import atexit
@@ -61,9 +61,8 @@ class Connection(httplib.HTTPConnection):
             raise ValueError("Invalid scheme '%s'" % self.scheme)
 
 
+@implementer(IPurger)
 class DefaultPurger(object):
-
-    implements(IPurger)
 
     def __init__(self, factory=Connection, timeout=30, backlog=200,
                  errorHeaders=('x-squid-error', ), http_1_1=True):
@@ -260,8 +259,11 @@ class Worker(threading.Thread):
                             break
                     # Got an item, purge it!
                     try:
-                        resp, msg, err = self.producer._purgeSync(connection,
-                                                                  url, httpVerb)
+                        resp, msg, err = self.producer._purgeSync(
+                            connection,
+                            url,
+                            httpVerb
+                        )
                         # worked! See if we can leave the connection open for
                         # the next item we need to process
                         # NOTE: If we make a HTTP 1.0 request to IIS, it
@@ -327,12 +329,14 @@ class Worker(threading.Thread):
                     time.sleep(1)
         return None  # must be stopping!
 
+
 DEFAULT_PURGER = DefaultPurger()
 
 
 def stopThreads():
     purger = DEFAULT_PURGER
     purger.stopThreads()
+
 
 addCleanUp(stopThreads)
 del addCleanUp

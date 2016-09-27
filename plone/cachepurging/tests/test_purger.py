@@ -33,7 +33,7 @@ class TestHandler(BaseHTTPRequestHandler):
             print self.command, self.path, self.protocol_version
             for h, v in self.headers.items():
                 print "%s: %s" % (h, v)
-            raise RuntimeError, "Unexpected connection"
+            raise RuntimeError('Unexpected connection')
 
         # We may have a function to call to check things.
         validator = nr.get('validator')

@@ -9,11 +9,10 @@ from plone.registry.interfaces import IRegistry
 from z3c.caching.interfaces import IPurgeEvent
 from z3c.caching.interfaces import IPurgePaths
 from zope.component import adapter
-from zope.component import adapts
 from zope.component import provideAdapter
 from zope.component import provideHandler
 from zope.component import provideUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 import unittest
 import zope.component.testing
@@ -84,9 +83,9 @@ class TestPurgeImmediately(unittest.TestCase):
         self.settings.enabled = True
         self.settings.cachingProxies = ('http://localhost:1234',)
 
+        @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths(object):
-            implements(IPurgePaths)
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context
@@ -99,8 +98,8 @@ class TestPurgeImmediately(unittest.TestCase):
 
         provideAdapter(FauxPurgePaths, name="test1")
 
+        @implementer(IPurger)
         class FauxPurger(object):
-            implements(IPurger)
 
             def purgeSync(self, url, httpVerb='PURGE'):
                 return "200 OK", "cached", None
@@ -117,9 +116,13 @@ class TestPurgeImmediately(unittest.TestCase):
 
     def test_purge(self):
         view = PurgeImmediately(FauxContext(), FauxRequest())
-        self.assertEqual("Purged http://localhost:1234/foo Status 200 OK X-Cache cached Error: None\n"
-                         "Purged http://localhost:1234/bar Status 200 OK X-Cache cached Error: None\n",
-                         view())
+        self.assertEqual(
+            'Purged http://localhost:1234/foo Status 200 OK X-Cache cached '
+            'Error: None\n'
+            'Purged http://localhost:1234/bar Status 200 OK X-Cache cached '
+            'Error: None\n',
+            view()
+        )
 
 
 def test_suite():
