@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.cachepurging.browser import PurgeImmediately
 from plone.cachepurging.browser import QueuePurge
 from plone.cachepurging.interfaces import ICachePurgingSettings

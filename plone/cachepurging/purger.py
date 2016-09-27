@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """The following is borrowed heavily from Products.CMFSquidTool. That code
 is ZPL licensed.
 

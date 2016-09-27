@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.rewrite import DefaultRewriter
 from plone.registry import Registry

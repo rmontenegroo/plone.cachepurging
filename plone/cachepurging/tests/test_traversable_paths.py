@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from OFS.interfaces import ITraversable
 from plone.cachepurging.paths import TraversablePurgePaths
 from zope.interface import implements

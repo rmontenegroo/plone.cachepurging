@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This test is borrwed heavily from Products.CMFSquidTool. That code is ZPL
 licensed.
 """

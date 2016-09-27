@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.cachepurging.hooks import purge
 from plone.cachepurging.hooks import queuePurge
 from plone.cachepurging.interfaces import ICachePurgingSettings

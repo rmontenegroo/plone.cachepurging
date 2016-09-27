@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.cachepurging import utils
 from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.interfaces import IPurgePathRewriter

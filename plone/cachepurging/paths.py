@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from OFS.interfaces import ITraversable
 from z3c.caching.interfaces import IPurgePaths
 from zope.component import adapts
