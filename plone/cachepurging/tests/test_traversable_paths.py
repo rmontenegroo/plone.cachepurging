@@ -1,9 +1,9 @@
-import unittest
-
+from OFS.interfaces import ITraversable
+from plone.cachepurging.paths import TraversablePurgePaths
 from zope.interface import implements
 
-from plone.cachepurging.paths import TraversablePurgePaths
-from OFS.interfaces import ITraversable
+import unittest
+
 
 class FauxTraversable(object):
     implements(ITraversable)

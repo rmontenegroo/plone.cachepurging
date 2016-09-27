@@ -1,18 +1,14 @@
-from StringIO import StringIO
-
-from zope.component import getUtility
-from zope.event import notify
-
-from plone.registry.interfaces import IRegistry
-
-from plone.cachepurging.interfaces import IPurger
 from plone.cachepurging.interfaces import ICachePurgingSettings
-
-from z3c.caching.purge import Purge
-
+from plone.cachepurging.interfaces import IPurger
 from plone.cachepurging.utils import getPathsToPurge
 from plone.cachepurging.utils import getURLsToPurge
 from plone.cachepurging.utils import isCachePurgingEnabled
+from plone.registry.interfaces import IRegistry
+from StringIO import StringIO
+from z3c.caching.purge import Purge
+from zope.component import getUtility
+from zope.event import notify
+
 
 class QueuePurge(object):
     """Manually initiate a purge
@@ -56,4 +52,3 @@ class PurgeImmediately(object):
                 print >>out, "Purged", url, "Status", status, "X-Cache", xcache, "Error:", xerror
 
         return out.getvalue()
-

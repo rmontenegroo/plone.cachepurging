@@ -2,15 +2,16 @@
 licensed.
 """
 
-import os
-import threading
-import unittest
-import Queue
-import time
-
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-
+from BaseHTTPServer import BaseHTTPRequestHandler
+from BaseHTTPServer import HTTPServer
 from plone.cachepurging.purger import DefaultPurger
+
+import os
+import Queue
+import threading
+import time
+import unittest
+
 
 # Define a test HTTP server that returns canned responses
 
@@ -228,4 +229,3 @@ class TestAsyncConnectionFailure(TestCase):
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
-

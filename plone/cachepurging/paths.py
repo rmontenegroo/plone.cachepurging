@@ -1,9 +1,8 @@
-from zope.interface import implements
-from zope.component import adapts
-
-from z3c.caching.interfaces import IPurgePaths
-
 from OFS.interfaces import ITraversable
+from z3c.caching.interfaces import IPurgePaths
+from zope.component import adapts
+from zope.interface import implements
+
 
 class TraversablePurgePaths(object):
     """Default purge for OFS.Traversable-style objects

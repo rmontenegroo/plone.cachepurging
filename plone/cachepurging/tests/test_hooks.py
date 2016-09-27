@@ -1,36 +1,28 @@
-import unittest
-import zope.component.testing
-
-from zope.interface import implements
-from zope.interface import alsoProvides
-
-from zope.component import adapts
-from zope.component import provideUtility
-from zope.component import provideAdapter
-from zope.component import provideHandler
-
-from zope.event import notify
-
+from plone.cachepurging.hooks import purge
+from plone.cachepurging.hooks import queuePurge
+from plone.cachepurging.interfaces import ICachePurgingSettings
+from plone.cachepurging.interfaces import IPurger
+from plone.registry import Registry
+from plone.registry.fieldfactory import persistentFieldAdapter
+from plone.registry.interfaces import IRegistry
+from z3c.caching.interfaces import IPurgePaths
+from z3c.caching.purge import Purge
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
-
+from zope.component import adapts
+from zope.component import provideAdapter
+from zope.component import provideHandler
+from zope.component import provideUtility
+from zope.event import notify
 from zope.globalrequest import setRequest
-
-from z3c.caching.interfaces import IPurgePaths
-from z3c.caching.purge import Purge
-
-from plone.registry.interfaces import IRegistry
-from plone.registry import Registry
-
-from plone.registry.fieldfactory import persistentFieldAdapter
-
-from plone.cachepurging.interfaces import IPurger
-from plone.cachepurging.interfaces import ICachePurgingSettings
-
-from plone.cachepurging.hooks import queuePurge, purge
-
+from zope.interface import alsoProvides
+from zope.interface import implements
 from ZPublisher.pubevents import PubSuccess
+
+import unittest
+import zope.component.testing
+
 
 class FauxContext(dict):
     pass
@@ -429,4 +421,3 @@ class TestPurgeHandler(unittest.TestCase):
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
-

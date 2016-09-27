@@ -1,25 +1,22 @@
+from plone.cachepurging.browser import PurgeImmediately
+from plone.cachepurging.browser import QueuePurge
+from plone.cachepurging.interfaces import ICachePurgingSettings
+from plone.cachepurging.interfaces import IPurger
+from plone.registry import Registry
+from plone.registry.fieldfactory import persistentFieldAdapter
+from plone.registry.interfaces import IRegistry
+from z3c.caching.interfaces import IPurgeEvent
+from z3c.caching.interfaces import IPurgePaths
+from zope.component import adapter
+from zope.component import adapts
+from zope.component import provideAdapter
+from zope.component import provideHandler
+from zope.component import provideUtility
+from zope.interface import implements
+
 import unittest
 import zope.component.testing
 
-from zope.interface import implements
-from zope.component import adapts
-from zope.component import adapter
-from zope.component import provideUtility
-from zope.component import provideAdapter
-from zope.component import provideHandler
-
-from z3c.caching.interfaces import IPurgePaths
-from z3c.caching.interfaces import IPurgeEvent
-
-from plone.registry.interfaces import IRegistry
-from plone.registry import Registry
-
-from plone.registry.fieldfactory import persistentFieldAdapter
-
-from plone.cachepurging.interfaces import IPurger
-from plone.cachepurging.interfaces import ICachePurgingSettings
-
-from plone.cachepurging.browser import QueuePurge, PurgeImmediately
 
 class FauxContext(object):
     pass

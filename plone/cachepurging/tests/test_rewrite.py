@@ -1,16 +1,14 @@
+from plone.cachepurging.interfaces import ICachePurgingSettings
+from plone.cachepurging.rewrite import DefaultRewriter
+from plone.registry import Registry
+from plone.registry.fieldfactory import persistentFieldAdapter
+from plone.registry.interfaces import IRegistry
+from zope.component import provideAdapter
+from zope.component import provideUtility
+
 import unittest
 import zope.component.testing
 
-from zope.component import provideUtility
-from zope.component import provideAdapter
-
-from plone.registry.interfaces import IRegistry
-from plone.registry import Registry
-
-from plone.registry.fieldfactory import persistentFieldAdapter
-
-from plone.cachepurging.interfaces import ICachePurgingSettings
-from plone.cachepurging.rewrite import DefaultRewriter
 
 class FauxRequest(dict):
     pass

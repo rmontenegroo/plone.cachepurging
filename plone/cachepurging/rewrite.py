@@ -1,12 +1,13 @@
+from plone.cachepurging.interfaces import ICachePurgingSettings
+from plone.cachepurging.interfaces import IPurgePathRewriter
+from plone.registry.interfaces import IRegistry
+from zope.component import adapts
+from zope.component import queryUtility
+from zope.interface import implements
+from zope.interface import Interface
+
 import urlparse
 
-from zope.interface import Interface, implements
-from zope.component import adapts, queryUtility
-
-from plone.registry.interfaces import IRegistry
-
-from plone.cachepurging.interfaces import IPurgePathRewriter
-from plone.cachepurging.interfaces import ICachePurgingSettings
 
 class DefaultRewriter(object):
     """Default rewriter, which is aware of virtual hosting
