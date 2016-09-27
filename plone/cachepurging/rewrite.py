@@ -64,7 +64,8 @@ class DefaultRewriter(object):
         # Prefix, e.g. /_vh_foo/_vh_bar. Clear if we don't have any.
         pathPrefix = len(virtualUrlParts) == 3 and virtualUrlParts[1] or ''
         if pathPrefix:
-            pathPrefix = '/' + '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
+            pathPrefix = '/' + \
+                '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
 
         # Path, e.g. /front-page
         if len(path) > 0 and not path.startswith('/'):
@@ -80,5 +81,5 @@ class DefaultRewriter(object):
                     'root':    virtualRoot,
                     'prefix':  pathPrefix,
                     'path':    path}
-                )
+            )
         return paths

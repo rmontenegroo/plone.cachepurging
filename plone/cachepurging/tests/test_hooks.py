@@ -27,8 +27,10 @@ import zope.component.testing
 class FauxContext(dict):
     pass
 
+
 class FauxRequest(dict):
     pass
+
 
 class TestQueueHandler(unittest.TestCase):
 
@@ -105,7 +107,6 @@ class TestQueueHandler(unittest.TestCase):
             notify(Purge(context))
         except:
             self.fail()
-
 
     def test_no_registry(self):
         context = FauxContext()
@@ -185,7 +186,7 @@ class TestQueueHandler(unittest.TestCase):
         notify(Purge(context))
 
         self.assertEqual({'plone.cachepurging.urls': set()},
-                          dict(IAnnotations(request)))
+                         dict(IAnnotations(request)))
 
     def test_enabled(self):
         context = FauxContext()
@@ -220,7 +221,8 @@ class TestQueueHandler(unittest.TestCase):
         notify(Purge(context))
 
         self.assertEqual({'plone.cachepurging.urls': set(['/foo', '/bar'])},
-                          dict(IAnnotations(request)))
+                         dict(IAnnotations(request)))
+
 
 class TestPurgeHandler(unittest.TestCase):
 
@@ -321,7 +323,8 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(['/foo', '/bar'])
+        IAnnotations(request)['plone.cachepurging.urls'] = set(
+            ['/foo', '/bar'])
 
         class FauxPurger(object):
             implements(IPurger)
@@ -343,7 +346,8 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(['/foo', '/bar'])
+        IAnnotations(request)['plone.cachepurging.urls'] = set(
+            ['/foo', '/bar'])
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -373,7 +377,8 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(['/foo', '/bar'])
+        IAnnotations(request)['plone.cachepurging.urls'] = set(
+            ['/foo', '/bar'])
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -392,7 +397,8 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(['/foo', '/bar'])
+        IAnnotations(request)['plone.cachepurging.urls'] = set(
+            ['/foo', '/bar'])
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -417,7 +423,8 @@ class TestPurgeHandler(unittest.TestCase):
         notify(PubSuccess(request))
 
         self.assertEqual(['http://localhost:1234/foo', 'http://localhost:1234/bar'],
-                          purger.purged)
+                         purger.purged)
+
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)

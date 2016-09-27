@@ -13,6 +13,7 @@ import zope.component.testing
 class FauxRequest(dict):
     pass
 
+
 class TestRewrite(unittest.TestCase):
 
     def setUp(self):
@@ -28,7 +29,8 @@ class TestRewrite(unittest.TestCase):
         translatedPrefix = '/'.join(['_vh_%s' % p for p in prefix.split('/')])
 
         self.request['URL'] = '%s://%s%s%s' % (protocol, domain, prefix, path,)
-        self.request['ACTUAL_URL'] = '%s://%s%s%s' % (protocol, domain, prefix, path,)
+        self.request[
+            'ACTUAL_URL'] = '%s://%s%s%s' % (protocol, domain, prefix, path,)
         self.request['SERVER_URL'] = '%s://%s' % (protocol, domain,)
         self.request['PATH_INFO'] = '/VirtualHostBase/%s/%s:80%s/VirtualHostRoot%s%s' % (
             protocol, domain, root, translatedPrefix, path,)
@@ -38,7 +40,8 @@ class TestRewrite(unittest.TestCase):
             self.request['VIRTUAL_URL_PARTS'] = (
                 '%s://%s' % (protocol, domain,), prefix[1:], path[1:])
         else:
-            self.request['VIRTUAL_URL_PARTS'] = ('%s://%s' % (protocol, domain,), path[1:])
+            self.request['VIRTUAL_URL_PARTS'] = (
+                '%s://%s' % (protocol, domain,), path[1:])
 
         self.request['VirtualRootPhysicalPath'] = tuple(root.split('/'))
 
@@ -120,7 +123,8 @@ class TestRewrite(unittest.TestCase):
         self.request['VIRTUAL_URL_PARTS'] = ()
         self.assertEqual(['/foo'], self.rewriter('/foo'))
 
-        self.request['VIRTUAL_URL_PARTS'] = ('http://example.com', '', '/foo', 'x')
+        self.request['VIRTUAL_URL_PARTS'] = (
+            'http://example.com', '', '/foo', 'x')
         self.assertEqual(['/foo'], self.rewriter('/foo'))
 
         self.request['VIRTUAL_URL_PARTS'] = 'foo'
@@ -241,7 +245,8 @@ class TestRewrite(unittest.TestCase):
         settings = registry.forInterface(ICachePurgingSettings)
         settings.virtualHosting = True
 
-        self._prepareVHMRequest('/foo', domain='example.com:81', protocol='https')
+        self._prepareVHMRequest(
+            '/foo', domain='example.com:81', protocol='https')
         self.assertEqual(['/VirtualHostBase/https/example.com:81/plone/VirtualHostRoot/foo'],
                          self.rewriter('/foo'))
 
@@ -253,7 +258,8 @@ class TestRewrite(unittest.TestCase):
         settings.virtualHosting = True
         settings.domains = ('http://example.org:81', 'https://example.com:82')
 
-        self._prepareVHMRequest('/foo', domain='example.com:81', protocol='https')
+        self._prepareVHMRequest(
+            '/foo', domain='example.com:81', protocol='https')
         self.assertEqual(['/VirtualHostBase/http/example.org:81/plone/VirtualHostRoot/foo',
                           '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
                          self.rewriter('/foo'))
@@ -266,10 +272,12 @@ class TestRewrite(unittest.TestCase):
         settings.virtualHosting = True
         settings.domains = ('http://example.org:81', 'https://example.com:82')
 
-        self._prepareVHMRequest('/bar', domain='example.com:81', protocol='https')
+        self._prepareVHMRequest(
+            '/bar', domain='example.com:81', protocol='https')
         self.assertEqual(['/VirtualHostBase/http/example.org:81/plone/VirtualHostRoot/foo',
                           '/VirtualHostBase/https/example.com:82/plone/VirtualHostRoot/foo'],
                          self.rewriter('/foo'))
+
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)

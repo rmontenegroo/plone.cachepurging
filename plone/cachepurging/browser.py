@@ -26,6 +26,7 @@ class QueuePurge(object):
         notify(Purge(self.context))
         return 'Queued'
 
+
 class PurgeImmediately(object):
     """Purge immediately
     """

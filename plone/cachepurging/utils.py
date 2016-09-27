@@ -18,6 +18,7 @@ def isCachePurgingEnabled(registry=None):
     settings = registry.forInterface(ICachePurgingSettings, check=False)
     return (settings.enabled and bool(settings.cachingProxies))
 
+
 def getPathsToPurge(context, request):
     """Given the current request and an object, look up paths to purge for
     the object and yield them one by one. An IPurgePathRewriter adapter may
@@ -34,7 +35,7 @@ def getPathsToPurge(context, request):
                 if rewriter is None:
                     yield relativePath
                 else:
-                    rewrittenPaths = rewriter(relativePath) or [] # None -> []
+                    rewrittenPaths = rewriter(relativePath) or []  # None -> []
                     for rewrittenPath in rewrittenPaths:
                         yield rewrittenPath
 
@@ -43,6 +44,7 @@ def getPathsToPurge(context, request):
         if absolutePaths:
             for absolutePath in absolutePaths:
                 yield absolutePath
+
 
 def getURLsToPurge(path, proxies):
     """Yield full purge URLs for a given path, taking the caching proxies

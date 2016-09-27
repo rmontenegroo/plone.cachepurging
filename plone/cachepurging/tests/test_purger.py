@@ -31,7 +31,7 @@ class TestHandler(BaseHTTPRequestHandler):
             print "Unexpected connection from the purge tool"
             print self.command, self.path, self.protocol_version
             for h, v in self.headers.items():
-                print "%s: %s" % (h,v)
+                print "%s: %s" % (h, v)
             raise RuntimeError, "Unexpected connection"
 
         # We may have a function to call to check things.
@@ -62,6 +62,7 @@ class TestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+
 class TestHTTPServer(HTTPServer):
 
     def __init__(self, address, handler):
@@ -72,6 +73,7 @@ class TestHTTPServer(HTTPServer):
         self.response_queue.put(kw)
 
 # Finally the test suites.
+
 
 class TestCase(unittest.TestCase):
 
@@ -88,7 +90,8 @@ class TestCase(unittest.TestCase):
                     if self.httpd.response_queue.empty():
                         break
                     time.sleep(0.1)
-                self.assertTrue(self.httpd.response_queue.empty(), "response queue not consumed")
+                self.assertTrue(self.httpd.response_queue.empty(),
+                                "response queue not consumed")
             if not self.purger.stopThreads(wait=True):
                 self.fail("The purge threads did not stop")
         finally:
@@ -115,6 +118,7 @@ class TestCase(unittest.TestCase):
             t.start()
         return httpd, t
 
+
 class TestSync(TestCase):
 
     def setUp(self):
@@ -136,7 +140,7 @@ class TestSync(TestCase):
     def testHeaders(self):
         headers = {'X-Squid-Error': 'error text',
                    'X-Cache': 'a message',
-        }
+                   }
         self.httpd.queue_response(response=200, headers=headers)
         status, msg, err = self.dispatchURL("/foo")
         self.assertEqual(msg, 'a message')
@@ -148,11 +152,13 @@ class TestSync(TestCase):
         status, msg, err = self.dispatchURL("/foo")
         self.assertEqual(status, 'ERROR')
 
+
 class TestSyncHTTP10(TestSync):
 
     def setUp(self):
         super(TestSync, self).setUp()
         self.purger.http_1_1 = False
+
 
 class TestAsync(TestCase):
 
@@ -182,8 +188,9 @@ class TestAsync(TestCase):
         self.httpd.queue_response(response=200)
         self.httpd.queue_response(response=None)
         self.httpd.queue_response(response=200)
-        self.dispatchURL("/foo") # will consume first.
-        self.dispatchURL("/bar") # will consume error, then retry
+        self.dispatchURL("/foo")  # will consume first.
+        self.dispatchURL("/bar")  # will consume error, then retry
+
 
 class TestAsyncConnectionFailure(TestCase):
 
@@ -226,6 +233,7 @@ class TestAsyncConnectionFailure(TestCase):
                 break
             time.sleep(0.1)
         # else - our tearDown will complain about the queue
+
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)

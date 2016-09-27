@@ -14,6 +14,7 @@ from ZPublisher.interfaces import IPubSuccess
 
 KEY = "plone.cachepurging.urls"
 
+
 @adapter(IPurgeEvent)
 def queuePurge(event):
     """Find URLs to purge and queue them for later
@@ -32,6 +33,7 @@ def queuePurge(event):
 
     paths = annotations.setdefault(KEY, set())
     paths.update(getPathsToPurge(event.object, request))
+
 
 @adapter(IPubSuccess)
 def purge(event):

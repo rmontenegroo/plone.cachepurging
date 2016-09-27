@@ -21,8 +21,10 @@ import zope.component.testing
 class FauxContext(object):
     pass
 
+
 class FauxRequest(dict):
     pass
+
 
 class Handler(object):
 
@@ -32,6 +34,7 @@ class Handler(object):
     @adapter(IPurgeEvent)
     def handler(self, event):
         self.invocations.append(event)
+
 
 class TestQueuePurge(unittest.TestCase):
 
@@ -66,6 +69,7 @@ class TestQueuePurge(unittest.TestCase):
         self.assertEqual('Queued', view())
         self.assertEqual(1, len(self.handler.invocations))
         self.assertTrue(self.handler.invocations[0].object is context)
+
 
 class TestPurgeImmediately(unittest.TestCase):
 
@@ -113,8 +117,9 @@ class TestPurgeImmediately(unittest.TestCase):
     def test_purge(self):
         view = PurgeImmediately(FauxContext(), FauxRequest())
         self.assertEqual("Purged http://localhost:1234/foo Status 200 OK X-Cache cached Error: None\n"
-                          "Purged http://localhost:1234/bar Status 200 OK X-Cache cached Error: None\n",
-                          view())
+                         "Purged http://localhost:1234/bar Status 200 OK X-Cache cached Error: None\n",
+                         view())
+
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)

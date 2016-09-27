@@ -43,17 +43,17 @@ class Connection(httplib.HTTPConnection):
         else:
             raise ValueError("Invalid scheme '%s'" % scheme)
         httplib.HTTPConnection.__init__(self, host, port, strict,
-            timeout=timeout)
+                                        timeout=timeout)
         self.timeout = timeout
 
     def connect(self):
         if self.scheme == "http":
             httplib.HTTPConnection.connect(self)
         elif self.scheme == "https":
-            import ssl # import here in case python has no ssl support
+            import ssl  # import here in case python has no ssl support
             # Clone of httplib.HTTPSConnection.connect
             sock = socket.create_connection((self.host, self.port),
-                timeout=self.timeout)
+                                            timeout=self.timeout)
             key_file = cert_file = None
             self.sock = ssl.wrap_socket(sock, key_file, cert_file)
         else:
@@ -65,7 +65,7 @@ class DefaultPurger(object):
     implements(IPurger)
 
     def __init__(self, factory=Connection, timeout=30, backlog=200,
-            errorHeaders=('x-squid-error', ), http_1_1=True):
+                 errorHeaders=('x-squid-error', ), http_1_1=True):
         self.factory = factory
         self.timeout = timeout
         self.queues = {}
@@ -198,7 +198,7 @@ class DefaultPurger(object):
         purge_path = urlparse.urlunparse(
             ('', '', path, params, query, fragment))
         logger.debug('making %s request to %s for %s.',
-            httpVerb, host, purge_path)
+                     httpVerb, host, purge_path)
         conn.putrequest(httpVerb, purge_path, skip_accept_encoding=True)
         conn.endheaders()
         resp = conn.getresponse()
@@ -212,7 +212,7 @@ class DefaultPurger(object):
                 break
         resp.read()
         logger.debug("%s of %s: %s %s",
-            httpVerb, url, resp.status, resp.reason)
+                     httpVerb, url, resp.status, resp.reason)
         return resp, xcache, xerror
 
 
@@ -241,7 +241,7 @@ class Worker(threading.Thread):
         try:
             while not self.stopping:
                 item = q.get()
-                if self.stopping or item is None: # Shut down thread signal
+                if self.stopping or item is None:  # Shut down thread signal
                     logger.debug('Stopping worker thread for '
                                  '(%s, %s).' % (self.host, self.scheme))
                     break
@@ -255,12 +255,12 @@ class Worker(threading.Thread):
                     # Get a connection.
                     if connection is None:
                         connection = self.getConnection(url)
-                        if connection is None: # stopping
+                        if connection is None:  # stopping
                             break
                     # Got an item, purge it!
                     try:
                         resp, msg, err = self.producer._purgeSync(connection,
-                                                                 url, httpVerb)
+                                                                  url, httpVerb)
                         # worked! See if we can leave the connection open for
                         # the next item we need to process
                         # NOTE: If we make a HTTP 1.0 request to IIS, it
@@ -273,7 +273,7 @@ class Worker(threading.Thread):
                         if not self.producer.http_1_1 or resp.will_close:
                             connection.close()
                             connection = None
-                        break # all done with this item!
+                        break  # all done with this item!
 
                     except (httplib.HTTPException, socket.error), e:
                         # All errors 'connection' related errors are treated
@@ -324,7 +324,7 @@ class Worker(threading.Thread):
                     if self.stopping:
                         break
                     time.sleep(1)
-        return None # must be stopping!
+        return None  # must be stopping!
 
 DEFAULT_PURGER = DefaultPurger()
 
