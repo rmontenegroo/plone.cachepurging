@@ -303,19 +303,19 @@ Let's say you wanted to always purge the URL ``${object_url}/view`` for any
 object providing ``IContentish`` from CMF. A simple implementation may look
 like this::
 
-    from zope.interface import implements
+    from zope.interface import implementer
     from zope.component import adapts
 
     from z3c.caching.interfaces import IPurgePaths
 
     from Products.CMFCore.interfaces import IContentish
 
+    @implementer(IPurgePaths)
     class ObjectViewPurgePaths(object):
         """Purge /view for any content object with the content object's
         default URL
         """
 
-        implements(IPurgePaths)
         adapts(IContentish)
 
         def __init__(self, context):
