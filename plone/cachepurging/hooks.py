@@ -1,22 +1,20 @@
-from zope.component import adapter, queryUtility
-from zope.annotation.interfaces import IAnnotations
-
-from zope.globalrequest import getRequest
-
-from z3c.caching.interfaces import IPurgeEvent
-
-from plone.registry.interfaces import IRegistry
-
+# -*- coding: utf-8 -*-
 from plone.cachepurging.interfaces import ICachePurgingSettings
 from plone.cachepurging.interfaces import IPurger
-
 from plone.cachepurging.utils import getPathsToPurge
-from plone.cachepurging.utils import isCachePurgingEnabled
 from plone.cachepurging.utils import getURLsToPurge
-
+from plone.cachepurging.utils import isCachePurgingEnabled
+from plone.registry.interfaces import IRegistry
+from z3c.caching.interfaces import IPurgeEvent
+from zope.annotation.interfaces import IAnnotations
+from zope.component import adapter
+from zope.component import queryUtility
+from zope.globalrequest import getRequest
 from ZPublisher.interfaces import IPubSuccess
 
+
 KEY = "plone.cachepurging.urls"
+
 
 @adapter(IPurgeEvent)
 def queuePurge(event):
@@ -36,6 +34,7 @@ def queuePurge(event):
 
     paths = annotations.setdefault(KEY, set())
     paths.update(getPathsToPurge(event.object, request))
+
 
 @adapter(IPubSuccess)
 def purge(event):

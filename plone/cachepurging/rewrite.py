@@ -1,19 +1,20 @@
+# -*- coding: utf-8 -*-
+from plone.cachepurging.interfaces import ICachePurgingSettings
+from plone.cachepurging.interfaces import IPurgePathRewriter
+from plone.registry.interfaces import IRegistry
+from zope.component import adapter
+from zope.component import queryUtility
+from zope.interface import implementer
+from zope.interface import Interface
+
 import urlparse
 
-from zope.interface import Interface, implements
-from zope.component import adapts, queryUtility
 
-from plone.registry.interfaces import IRegistry
-
-from plone.cachepurging.interfaces import IPurgePathRewriter
-from plone.cachepurging.interfaces import ICachePurgingSettings
-
+@implementer(IPurgePathRewriter)
+@adapter(Interface)
 class DefaultRewriter(object):
     """Default rewriter, which is aware of virtual hosting
     """
-
-    implements(IPurgePathRewriter)
-    adapts(Interface)
 
     def __init__(self, request):
         self.request = request
@@ -43,12 +44,14 @@ class DefaultRewriter(object):
         virtualRootPhysicalPath = request.get('VirtualRootPhysicalPath')
 
         # Make sure request is compliant
-        if (not virtualUrlParts
-                or not virtualRootPhysicalPath
-                or not isinstance(virtualUrlParts, (list, tuple,))
-                or not isinstance(virtualRootPhysicalPath, (list, tuple,))
-                or len(virtualUrlParts) < 2
-                or len(virtualUrlParts) > 3):
+        if (
+            not virtualUrlParts or
+            not virtualRootPhysicalPath or
+            not isinstance(virtualUrlParts, (list, tuple,)) or
+            not isinstance(virtualRootPhysicalPath, (list, tuple,)) or
+            len(virtualUrlParts) < 2 or
+            len(virtualUrlParts) > 3
+        ):
             return [path]
 
         domains = settings.domains
@@ -63,7 +66,8 @@ class DefaultRewriter(object):
         # Prefix, e.g. /_vh_foo/_vh_bar. Clear if we don't have any.
         pathPrefix = len(virtualUrlParts) == 3 and virtualUrlParts[1] or ''
         if pathPrefix:
-            pathPrefix = '/' + '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
+            pathPrefix = '/' + \
+                '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
 
         # Path, e.g. /front-page
         if len(path) > 0 and not path.startswith('/'):
@@ -73,11 +77,13 @@ class DefaultRewriter(object):
         for domain in domains:
             scheme, host = urlparse.urlparse(domain)[:2]
             paths.append(
-                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/VirtualHostRoot%(prefix)s%(path)s' % {
-                    'scheme':  scheme,
-                    'host':    host,
-                    'root':    virtualRoot,
-                    'prefix':  pathPrefix,
-                    'path':    path}
-                )
+                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/'
+                'VirtualHostRoot%(prefix)s%(path)s' % {
+                    'scheme': scheme,
+                    'host': host,
+                    'root': virtualRoot,
+                    'prefix': pathPrefix,
+                    'path': path
+                }
+            )
         return paths
