@@ -10,7 +10,6 @@ from zope.component import adapts
 from zope.component import adapter
 from zope.component import provideAdapter
 from zope.component import provideUtility
-from zope.interface import implements
 from zope.interface import implementer
 
 import unittest
@@ -159,7 +158,6 @@ class TestGetPathsToPurge(unittest.TestCase):
         @implementer(IPurgePathRewriter)
         @adapter(FauxRequest)
         class DefaultRewriter(object):
-            implements(IPurgePathRewriter)
             adapts(FauxRequest)
 
             def __init__(self, request):
@@ -233,8 +231,9 @@ class TestGetPathsToPurge(unittest.TestCase):
         )
 
     def test_rewriter_abort(self):
+
+        @implementer(IPurgePaths)
         class FauxPurgePaths1(object):
-            implements(IPurgePaths)
             adapts(FauxContext)
 
             def __init__(self, context):

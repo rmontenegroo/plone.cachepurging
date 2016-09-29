@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.12 (unreleased)
+1.0.13 (unreleased)
 -------------------
 
 Breaking changes:
@@ -14,8 +14,17 @@ New features:
 
 Bug fixes:
 
-- Code-Style: isort, utf8-headers, zca-decorators, manual cleanup.
+- Code-Style: isort, utf8-headers, manual cleanup.
   [jensens]
+
+
+1.0.12 (2016-08-08)
+-------------------
+
+New features:
+
+- Use zope.interface decorator.
+  [gforcada]
 
 
 1.0.11 (2016-01-08)
