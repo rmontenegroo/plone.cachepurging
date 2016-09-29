@@ -6,7 +6,6 @@ from plone.registry import Registry
 from plone.registry.fieldfactory import persistentFieldAdapter
 from plone.registry.interfaces import IRegistry
 from z3c.caching.interfaces import IPurgePaths
-from zope.component import adapts
 from zope.component import adapter
 from zope.component import provideAdapter
 from zope.component import provideUtility
@@ -158,7 +157,6 @@ class TestGetPathsToPurge(unittest.TestCase):
         @implementer(IPurgePathRewriter)
         @adapter(FauxRequest)
         class DefaultRewriter(object):
-            adapts(FauxRequest)
 
             def __init__(self, request):
                 self.request = request
@@ -233,8 +231,8 @@ class TestGetPathsToPurge(unittest.TestCase):
     def test_rewriter_abort(self):
 
         @implementer(IPurgePaths)
+        @adapter(FauxContext)
         class FauxPurgePaths1(object):
-            adapts(FauxContext)
 
             def __init__(self, context):
                 self.context = context

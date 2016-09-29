@@ -14,7 +14,7 @@ New features:
 
 Bug fixes:
 
-- Code-Style: isort, utf8-headers, manual cleanup.
+- Code-Style: isort, utf8-headers, zca-decorators, manual cleanup.
   [jensens]
 
 
