@@ -14,45 +14,47 @@ Asynchronous purging works as follows:
 
 from App.config import getConfiguration
 from plone.cachepurging.interfaces import IPurger
+from six.moves import http_client
+from six.moves import queue
+from six.moves import range
+from six.moves import urllib
 from zope.interface import implementer
 from zope.testing.cleanup import addCleanUp
 
 import atexit
-import httplib
 import logging
-import Queue
+import six
 import socket
 import sys
 import threading
 import time
-import urlparse
 
 
 logger = logging.getLogger('plone.cachepurging')
 
 
-class Connection(httplib.HTTPConnection):
+class Connection(http_client.HTTPConnection):
     """A connection that can handle either HTTP or HTTPS
     """
 
     def __init__(self, host, port=None, strict=None, scheme="http", timeout=5):
         self.scheme = scheme
         if scheme == "http":
-            self.default_port = httplib.HTTP_PORT
+            self.default_port = http_client.HTTP_PORT
         elif scheme == "https":
-            self.default_port = httplib.HTTPS_PORT
+            self.default_port = http_client.HTTPS_PORT
         else:
             raise ValueError("Invalid scheme '%s'" % scheme)
-        httplib.HTTPConnection.__init__(self, host, port, strict,
-                                        timeout=timeout)
+        http_client.HTTPConnection.__init__(self, host, port, strict,
+                                            timeout=timeout)
         self.timeout = timeout
 
     def connect(self):
         if self.scheme == "http":
-            httplib.HTTPConnection.connect(self)
+            http_client.HTTPConnection.connect(self)
         elif self.scheme == "https":
             import ssl  # import here in case python has no ssl support
-            # Clone of httplib.HTTPSConnection.connect
+            # Clone of http_client.HTTPSConnection.connect
             sock = socket.create_connection((self.host, self.port),
                                             timeout=self.timeout)
             key_file = cert_file = None
@@ -76,7 +78,7 @@ class DefaultPurger(object):
         self.http_1_1 = http_1_1
 
     def purgeAsync(self, url, httpVerb='PURGE'):
-        (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
+        (scheme, host, path, params, query, fragment) = urllib.parse.urlparse(url)  # noqa: E501
         __traceback_info__ = (url, httpVerb, scheme, host,
                               path, params, query, fragment)
 
@@ -84,7 +86,7 @@ class DefaultPurger(object):
         try:
             q.put((url, httpVerb), block=False)
             logger.debug('Queued %s' % url)
-        except Queue.Full:
+        except queue.Full:
             # Make a loud noise. Ideally the queue size would be
             # user-configurable - but the more likely case is that the purge
             # host is down.
@@ -118,18 +120,18 @@ class DefaultPurger(object):
         return status, xcache, xerror
 
     def stopThreads(self, wait=False):
-        for w in self.workers.itervalues():
+        for w in six.itervalues(self.workers):
             w.stopping = True
         # in case the queue is empty, wake it up so the .stopping flag is seen
         for q in self.queues.values():
             try:
                 q.put(None, block=False)
-            except Queue.Full:
+            except queue.Full:
                 # no problem - self.stopping should be seen.
                 pass
         ok = True
         if wait:
-            for w in self.workers.itervalues():
+            for w in six.itervalues(self.workers):
                 w.join(5)
                 if w.isAlive():
                     logger.warning("Worker thread %s failed to terminate", w)
@@ -142,7 +144,7 @@ class DefaultPurger(object):
         trapped.
         """
 
-        (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
+        (scheme, host, path, params, query, fragment) = urllib.parse.urlparse(url)
         #
         # process.
         conn = self.factory(host, scheme=scheme, timeout=self.timeout)
@@ -155,7 +157,7 @@ class DefaultPurger(object):
         given URL.
         """
 
-        (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
+        (scheme, host, path, params, query, fragment) = urllib.parse.urlparse(url)
         key = (host, scheme)
         if key not in self.queues:
             self.queueLock.acquire()
@@ -164,9 +166,9 @@ class DefaultPurger(object):
                     logger.debug("Creating worker thread for %s://%s",
                                  scheme, host)
                     assert key not in self.workers
-                    self.queues[key] = queue = Queue.Queue(self.backlog)
+                    self.queues[key] = queue_ = queue.Queue(self.backlog)
                     self.workers[key] = worker = Worker(
-                        queue, host, scheme, self)
+                        queue_, host, scheme, self)
                     worker.start()
             finally:
                 self.queueLock.release()
@@ -180,7 +182,7 @@ class DefaultPurger(object):
         header list in ``self.errorHeaders``.
         """
 
-        (scheme, host, path, params, query, fragment) = urlparse.urlparse(url)
+        (scheme, host, path, params, query, fragment) = urllib.parse.urlparse(url)  # noqa: E501
         __traceback_info__ = (url, httpVerb, scheme, host,
                               path, params, query, fragment)
 
@@ -195,7 +197,7 @@ class DefaultPurger(object):
             # hosting in squid
             path = url
 
-        purge_path = urlparse.urlunparse(
+        purge_path = urllib.parse.urlunparse(
             ('', '', path, params, query, fragment))
         logger.debug('making %s request to %s for %s.',
                      httpVerb, host, purge_path)
@@ -234,7 +236,7 @@ class Worker(threading.Thread):
 
     def run(self):
         logger.debug("%s starting", self)
-        # Queue should always exist!
+        # queue should always exist!
         q = self.producer.queues[(self.host, self.scheme)]
         connection = None
         atexit.register(self.stop)
@@ -271,14 +273,14 @@ class Worker(threading.Thread):
                         # connection.  It is not clear if IIS is evil for
                         # not returning a "connection: close" header in this
                         # case (ie, assuming HTTP 1.0 close semantics), or
-                        # if httplib.py is evil for not detecting this
+                        # if http_client.py is evil for not detecting this
                         # situation and flagging will_close.
                         if not self.producer.http_1_1 or resp.will_close:
                             connection.close()
                             connection = None
                         break  # all done with this item!
 
-                    except (httplib.HTTPException, socket.error), e:
+                    except (http_client.HTTPException, socket.error), e:
                         # All errors 'connection' related errors are treated
                         # the same - simply drop the connection and retry.
                         # the process for establishing the connection handles
@@ -323,7 +325,7 @@ class Worker(threading.Thread):
                     break
                 logger.debug("Error %s connecting to %s - will "
                              "retry in %d second(s)", e, url, wait_time)
-                for i in xrange(wait_time):
+                for i in range(wait_time):
                     if self.stopping:
                         break
                     time.sleep(1)

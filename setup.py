@@ -33,6 +33,7 @@ setup(
         'setuptools',
         'five.globalrequest',
         'plone.registry',
+        'six',
         'z3c.caching',
         'zope.annotation',
         'zope.component',
