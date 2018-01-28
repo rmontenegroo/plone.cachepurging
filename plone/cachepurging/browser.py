@@ -5,7 +5,7 @@ from plone.cachepurging.utils import getPathsToPurge
 from plone.cachepurging.utils import getURLsToPurge
 from plone.cachepurging.utils import isCachePurgingEnabled
 from plone.registry.interfaces import IRegistry
-from StringIO import StringIO
+from six import StringIO
 from z3c.caching.purge import Purge
 from zope.component import getUtility
 from zope.event import notify

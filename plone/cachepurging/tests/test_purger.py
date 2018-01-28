@@ -3,12 +3,12 @@
 licensed.
 """
 
-from BaseHTTPServer import BaseHTTPRequestHandler
-from BaseHTTPServer import HTTPServer
 from plone.cachepurging.purger import DefaultPurger
+from six.moves import queue
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
+from six.moves.BaseHTTPServer import HTTPServer
 
 import os
-import Queue
 import threading
 import time
 import unittest
@@ -28,8 +28,8 @@ class TestHandler(BaseHTTPRequestHandler):
         # Get the pre-defined response from the server's queue.
         try:
             nr = self.server.response_queue.get(block=False)
-        except Queue.Empty:
-            print "Unexpected connection from the purge tool"
+        except queue.Empty:
+            print("Unexpected connection from the purge tool")
             print self.command, self.path, self.protocol_version
             for h, v in self.headers.items():
                 print "%s: %s" % (h, v)
@@ -68,7 +68,7 @@ class TestHTTPServer(HTTPServer):
 
     def __init__(self, address, handler):
         HTTPServer.__init__(self, address, handler)
-        self.response_queue = Queue.Queue()
+        self.response_queue = queue.Queue()
 
     def queue_response(self, **kw):
         self.response_queue.put(kw)
