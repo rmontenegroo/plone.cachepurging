@@ -4,14 +4,6 @@ Changelog
 1.0.14 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Add Python 2 / 3 compatibility
