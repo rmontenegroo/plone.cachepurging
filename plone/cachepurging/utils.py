@@ -17,7 +17,7 @@ def isCachePurgingEnabled(registry=None):
         return False
 
     settings = registry.forInterface(ICachePurgingSettings, check=False)
-    return (settings.enabled and bool(settings.cachingProxies))
+    return settings.enabled
 
 
 def getPathsToPurge(context, request):
