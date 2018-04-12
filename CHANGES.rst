@@ -4,17 +4,10 @@ Changelog
 1.0.15 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
-- *add item here*
+- consider purging to be enabled when it’s enabled (even if no servers are listed)
+  [skurfer]
 
 
 1.0.14 (2018-01-30)
