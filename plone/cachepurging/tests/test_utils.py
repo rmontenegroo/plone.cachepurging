@@ -38,7 +38,7 @@ class TestIsCachingEnabled(unittest.TestCase):
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
         provideUtility(registry, IRegistry)
-        self.assertEqual(False, utils.isCachePurgingEnabled())
+        self.assertEqual(True, utils.isCachePurgingEnabled())
 
     def test_disabled(self):
         registry = Registry()
