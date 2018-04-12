@@ -47,22 +47,7 @@ class TestIsCachingEnabled(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = False
-        settings.cachingProxies = ('http://localhost:1234',)
 
-        self.assertEqual(False, utils.isCachePurgingEnabled())
-
-    def test_no_proxies(self):
-        registry = Registry()
-        registry.registerInterface(ICachePurgingSettings)
-        provideUtility(registry, IRegistry)
-
-        settings = registry.forInterface(ICachePurgingSettings)
-        settings.enabled = False
-
-        settings.cachingProxies = None
-        self.assertEqual(False, utils.isCachePurgingEnabled())
-
-        settings.cachingProxies = ()
         self.assertEqual(False, utils.isCachePurgingEnabled())
 
     def test_enabled(self):
@@ -72,7 +57,6 @@ class TestIsCachingEnabled(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
         self.assertEqual(True, utils.isCachePurgingEnabled())
 
     def test_passed_registry(self):
@@ -80,7 +64,6 @@ class TestIsCachingEnabled(unittest.TestCase):
         registry.registerInterface(ICachePurgingSettings)
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
 
         self.assertEqual(False, utils.isCachePurgingEnabled())
         self.assertEqual(True, utils.isCachePurgingEnabled(registry))
