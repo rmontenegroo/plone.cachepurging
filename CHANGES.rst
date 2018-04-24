@@ -6,7 +6,7 @@ Changelog
 
 Bug fixes:
 
-- consider purging to be enabled when it’s enabled (even if no servers are listed)
+- consider purging to be enabled when it's enabled (even if no servers are listed)
   [skurfer]
 
 
