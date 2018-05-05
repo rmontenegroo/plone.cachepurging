@@ -280,7 +280,7 @@ class Worker(threading.Thread):
                             connection = None
                         break  # all done with this item!
 
-                    except (http_client.HTTPException, socket.error), e:
+                    except (http_client.HTTPException, socket.error) as e:
                         # All errors 'connection' related errors are treated
                         # the same - simply drop the connection and retry.
                         # the process for establishing the connection handles
