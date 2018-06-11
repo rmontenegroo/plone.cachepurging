@@ -422,10 +422,9 @@ class TestPurgeHandler(unittest.TestCase):
         provideUtility(purger)
 
         notify(PubSuccess(request))
-
-        self.assertEqual(
-            ['http://localhost:1234/foo', 'http://localhost:1234/bar'],
-            purger.purged
+        self.assertSetEqual(
+            {'http://localhost:1234/foo', 'http://localhost:1234/bar'},
+            set(purger.purged),
         )
 
 
