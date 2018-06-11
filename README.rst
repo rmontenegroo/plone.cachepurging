@@ -102,7 +102,7 @@ take place:
 If you need more control, you can perform the purging directly. Here is a
 snippet adapted from the ``plone.cachepurging.purge`` view::
 
-        from StringIO import StringIO
+        from six import StringIO
 
         from zope.component import getUtility
 
@@ -130,7 +130,7 @@ snippet adapted from the ``plone.cachepurging.purge`` view::
         for path in getPathsToPurge(self.context, self.request):
             for url in getURLsToPurge(path, settings.cachingProxies):
                 status, xcache, xerror = purger.purgeSync(url)
-                print >>out, "Purged", url, "Status", status, "X-Cache", xcache, "Error:", xerror
+                print("Purged", url, "Status", status, "X-Cache", xcache, "Error:", xerror, file=out)
 
         return out.getvalue()
 

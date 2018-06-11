@@ -37,7 +37,7 @@ class Connection(http_client.HTTPConnection):
     """A connection that can handle either HTTP or HTTPS
     """
 
-    def __init__(self, host, port=None, strict=None, scheme="http", timeout=5):
+    def __init__(self, host, port=None, scheme="http", timeout=5):
         self.scheme = scheme
         if scheme == "http":
             self.default_port = http_client.HTTP_PORT
@@ -45,8 +45,7 @@ class Connection(http_client.HTTPConnection):
             self.default_port = http_client.HTTPS_PORT
         else:
             raise ValueError("Invalid scheme '%s'" % scheme)
-        http_client.HTTPConnection.__init__(self, host, port, strict,
-                                            timeout=timeout)
+        http_client.HTTPConnection.__init__(self, host, port, timeout=timeout)
         self.timeout = timeout
 
     def connect(self):
