@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Set default purger backlog size to 0 (infinity) in order to fully invalidate Varnish cache
+  [avoinea refs #11]
 
 
 1.0.15 (2018-04-24)

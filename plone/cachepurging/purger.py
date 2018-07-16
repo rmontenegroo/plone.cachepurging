@@ -66,7 +66,7 @@ class Connection(http_client.HTTPConnection):
 @implementer(IPurger)
 class DefaultPurger(object):
 
-    def __init__(self, factory=Connection, timeout=30, backlog=200,
+    def __init__(self, factory=Connection, timeout=30, backlog=0,
                  errorHeaders=('x-squid-error', ), http_1_1=True):
         self.factory = factory
         self.timeout = timeout
