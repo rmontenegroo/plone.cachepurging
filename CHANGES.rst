@@ -17,7 +17,7 @@ Bug fixes:
 - Set default purger backlog size to 0 (infinity) in order to fully invalidate Varnish cache
   [avoinea refs #11]
 
-- Tests are Python 3 compatible
+- Tests and Code are Python 3 compatible
   [pbauer, ale-rt, jensens]
 
 

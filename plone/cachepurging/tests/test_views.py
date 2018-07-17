@@ -122,7 +122,7 @@ class TestPurgeImmediately(unittest.TestCase):
             'X-Cache: cached, '
             'Error: None\n'
             'Purged: http://localhost:1234/bar, '
-            'Status 200 OK, '
+            'Status: 200 OK, '
             'X-Cache: cached, '
             'Error: None\n',
             view()
