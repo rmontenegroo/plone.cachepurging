@@ -51,6 +51,9 @@ class PurgeImmediately(object):
         for path in getPathsToPurge(self.context, self.request):
             for url in getURLsToPurge(path, settings.cachingProxies):
                 status, xcache, xerror = purger.purgeSync(url)
-                print("Purged", url, "Status", status, "X-Cache", xcache, "Error:", xerror, file=out)  # noqa
+                out.write("Purged: " + url)
+                out.write(", Status: " + status)
+                out.write(", X-Cache: " + xcache)
+                out.write(", Error: " + xerror + '\n')
 
         return out.getvalue()

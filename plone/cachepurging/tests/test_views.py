@@ -117,9 +117,13 @@ class TestPurgeImmediately(unittest.TestCase):
     def test_purge(self):
         view = PurgeImmediately(FauxContext(), FauxRequest())
         self.assertEqual(
-            'Purged http://localhost:1234/foo Status 200 OK X-Cache cached '
+            'Purged: http://localhost:1234/foo, '
+            'Status: 200 OK, '
+            'X-Cache: cached, '
             'Error: None\n'
-            'Purged http://localhost:1234/bar Status 200 OK X-Cache cached '
+            'Purged: http://localhost:1234/bar, '
+            'Status 200 OK, '
+            'X-Cache: cached, '
             'Error: None\n',
             view()
         )
