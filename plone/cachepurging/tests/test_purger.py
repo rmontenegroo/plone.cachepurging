@@ -30,9 +30,9 @@ class TestHandler(BaseHTTPRequestHandler):
             nr = self.server.response_queue.get(block=False)
         except queue.Empty:
             print("Unexpected connection from the purge tool")
-            print self.command, self.path, self.protocol_version
+            print(self.command, self.path, self.protocol_version)
             for h, v in self.headers.items():
-                print "%s: %s" % (h, v)
+                print("%s: %s" % (h, v))
             raise RuntimeError('Unexpected connection')
 
         # We may have a function to call to check things.
@@ -58,7 +58,7 @@ class TestHandler(BaseHTTPRequestHandler):
         if headers:
             for h, v in headers.items():
                 self.send_header(h, v)
-        data = nr.get('data', '')
+        data = nr.get('data', b'')
         self.send_header("Content-Length", len(data))
         self.end_headers()
         self.wfile.write(data)
@@ -125,6 +125,7 @@ class TestSync(TestCase):
     def setUp(self):
         super(TestSync, self).setUp()
         self.purger.http_1_1 = True
+        self.maxDiff = None
 
     def tearDown(self):
         super(TestSync, self).tearDown()
