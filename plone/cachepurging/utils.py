@@ -52,10 +52,10 @@ def getURLsToPurge(path, proxies):
     listed in the registry into account.
     """
 
-    if not path.startswith('/'):
-        path = '/' + path
+    if not path.startswith("/"):
+        path = "/" + path
 
     for proxy in proxies:
-        if proxy.endswith('/'):
+        if proxy.endswith("/"):
             proxy = proxy[:-1]
         yield proxy + path

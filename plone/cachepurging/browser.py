@@ -26,10 +26,10 @@ class QueuePurge(object):
     def __call__(self):
 
         if not isCachePurgingEnabled():
-            return 'Caching not enabled'
+            return "Caching not enabled"
 
         notify(Purge(self.context))
-        return 'Queued'
+        return "Queued"
 
 
 class PurgeImmediately(object):
@@ -42,7 +42,7 @@ class PurgeImmediately(object):
 
     def __call__(self):
         if not isCachePurgingEnabled():
-            return 'Caching not enabled'
+            return "Caching not enabled"
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ICachePurgingSettings)
@@ -54,10 +54,7 @@ class PurgeImmediately(object):
                 status, xcache, xerror = purger.purgeSync(url)
                 out.write(
                     RESULT_TPL.format(
-                        url=url,
-                        status=status,
-                        xcache=xcache,
-                        xerror=xerror,
+                        url=url, status=status, xcache=xcache, xerror=xerror
                     )
                 )
         return out.getvalue()

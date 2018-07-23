@@ -27,7 +27,6 @@ class FauxRequest(dict):
 
 
 class Handler(object):
-
     def __init__(self):
         self.invocations = []
 
@@ -37,7 +36,6 @@ class Handler(object):
 
 
 class TestQueuePurge(unittest.TestCase):
-
     def setUp(self):
         provideAdapter(persistentFieldAdapter)
         self.registry = Registry()
@@ -46,7 +44,7 @@ class TestQueuePurge(unittest.TestCase):
 
         self.settings = self.registry.forInterface(ICachePurgingSettings)
         self.settings.enabled = True
-        self.settings.cachingProxies = ('http://localhost:1234',)
+        self.settings.cachingProxies = ("http://localhost:1234",)
 
         self.handler = Handler()
         provideHandler(self.handler.handler)
@@ -58,7 +56,7 @@ class TestQueuePurge(unittest.TestCase):
         self.settings.enabled = False
 
         view = QueuePurge(FauxContext(), FauxRequest())
-        self.assertEqual('Caching not enabled', view())
+        self.assertEqual("Caching not enabled", view())
         self.assertEqual([], self.handler.invocations)
 
     def test_enabled(self):
@@ -66,13 +64,12 @@ class TestQueuePurge(unittest.TestCase):
 
         context = FauxContext()
         view = QueuePurge(context, FauxRequest)
-        self.assertEqual('Queued', view())
+        self.assertEqual("Queued", view())
         self.assertEqual(1, len(self.handler.invocations))
         self.assertTrue(self.handler.invocations[0].object is context)
 
 
 class TestPurgeImmediately(unittest.TestCase):
-
     def setUp(self):
         provideAdapter(persistentFieldAdapter)
         self.registry = Registry()
@@ -81,17 +78,16 @@ class TestPurgeImmediately(unittest.TestCase):
 
         self.settings = self.registry.forInterface(ICachePurgingSettings)
         self.settings.enabled = True
-        self.settings.cachingProxies = ('http://localhost:1234',)
+        self.settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
                 return []
@@ -100,8 +96,7 @@ class TestPurgeImmediately(unittest.TestCase):
 
         @implementer(IPurger)
         class FauxPurger(object):
-
-            def purgeSync(self, url, httpVerb='PURGE'):
+            def purgeSync(self, url, httpVerb="PURGE"):
                 return "200 OK", "cached", None
 
         provideUtility(FauxPurger())
@@ -112,20 +107,20 @@ class TestPurgeImmediately(unittest.TestCase):
     def test_disabled(self):
         self.settings.enabled = False
         view = PurgeImmediately(FauxContext(), FauxRequest())
-        self.assertEqual('Caching not enabled', view())
+        self.assertEqual("Caching not enabled", view())
 
     def test_purge(self):
         view = PurgeImmediately(FauxContext(), FauxRequest())
         self.assertEqual(
-            'Purged: http://localhost:1234/foo, '
-            'Status: 200 OK, '
-            'X-Cache: cached, '
-            'Error: None\n'
-            'Purged: http://localhost:1234/bar, '
-            'Status: 200 OK, '
-            'X-Cache: cached, '
-            'Error: None\n',
-            view()
+            "Purged: http://localhost:1234/foo, "
+            "Status: 200 OK, "
+            "X-Cache: cached, "
+            "Error: None\n"
+            "Purged: http://localhost:1234/bar, "
+            "Status: 200 OK, "
+            "X-Cache: cached, "
+            "Error: None\n",
+            view(),
         )
 
 

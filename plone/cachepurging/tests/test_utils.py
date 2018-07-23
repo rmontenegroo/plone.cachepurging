@@ -24,7 +24,6 @@ class FauxRequest(dict):
 
 
 class TestIsCachingEnabled(unittest.TestCase):
-
     def setUp(self):
         provideAdapter(persistentFieldAdapter)
 
@@ -70,7 +69,6 @@ class TestIsCachingEnabled(unittest.TestCase):
 
 
 class TestGetPathsToPurge(unittest.TestCase):
-
     def setUp(self):
         self.context = FauxContext()
         self.request = FauxRequest()
@@ -80,14 +78,13 @@ class TestGetPathsToPurge(unittest.TestCase):
 
     def test_no_purge_paths(self):
         self.assertEqual(
-            [], list(utils.getPathsToPurge(self.context, self.request)))
+            [], list(utils.getPathsToPurge(self.context, self.request))
+        )
 
     def test_empty_relative_paths(self):
-
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
@@ -100,153 +97,146 @@ class TestGetPathsToPurge(unittest.TestCase):
         provideAdapter(FauxPurgePaths, name="test1")
 
         self.assertEqual(
-            [], list(utils.getPathsToPurge(self.context, self.request)))
+            [], list(utils.getPathsToPurge(self.context, self.request))
+        )
 
     def test_no_rewriter(self):
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
-                return ['/baz']
+                return ["/baz"]
 
         provideAdapter(FauxPurgePaths, name="test1")
 
-        self.assertEqual(['/foo', '/bar', '/baz'],
-                         list(utils.getPathsToPurge(self.context, self.request)))
+        self.assertEqual(
+            ["/foo", "/bar", "/baz"],
+            list(utils.getPathsToPurge(self.context, self.request)),
+        )
 
     def test_test_rewriter(self):
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
-                return ['/baz']
+                return ["/baz"]
 
         provideAdapter(FauxPurgePaths, name="test1")
 
         @implementer(IPurgePathRewriter)
         @adapter(FauxRequest)
         class DefaultRewriter(object):
-
             def __init__(self, request):
                 self.request = request
 
             def __call__(self, path):
-                return ['/vhm1' + path, '/vhm2' + path]
+                return ["/vhm1" + path, "/vhm2" + path]
 
         provideAdapter(DefaultRewriter)
 
-        self.assertEqual(['/vhm1/foo', '/vhm2/foo',
-                          '/vhm1/bar', '/vhm2/bar',
-                          '/baz'],
-                         list(utils.getPathsToPurge(self.context, self.request)))
+        self.assertEqual(
+            ["/vhm1/foo", "/vhm2/foo", "/vhm1/bar", "/vhm2/bar", "/baz"],
+            list(utils.getPathsToPurge(self.context, self.request)),
+        )
 
     def test_multiple_purge_paths(self):
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths1(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
-                return ['/baz']
+                return ["/baz"]
 
         provideAdapter(FauxPurgePaths1, name="test1")
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths2(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo/view']
+                return ["/foo/view"]
 
             def getAbsolutePaths(self):
-                return ['/quux']
+                return ["/quux"]
 
         provideAdapter(FauxPurgePaths2, name="test2")
 
         @implementer(IPurgePathRewriter)
         @adapter(FauxRequest)
         class DefaultRewriter(object):
-
             def __init__(self, request):
                 self.request = request
 
             def __call__(self, path):
-                return ['/vhm1' + path, '/vhm2' + path]
+                return ["/vhm1" + path, "/vhm2" + path]
 
         provideAdapter(DefaultRewriter)
 
         self.assertEqual(
             [
-                '/vhm1/foo',
-                '/vhm2/foo',
-                '/vhm1/bar',
-                '/vhm2/bar',
-                '/baz',
-                '/vhm1/foo/view',
-                '/vhm2/foo/view',
-                '/quux'
+                "/vhm1/foo",
+                "/vhm2/foo",
+                "/vhm1/bar",
+                "/vhm2/bar",
+                "/baz",
+                "/vhm1/foo/view",
+                "/vhm2/foo/view",
+                "/quux",
             ],
-            list(utils.getPathsToPurge(self.context, self.request))
+            list(utils.getPathsToPurge(self.context, self.request)),
         )
 
     def test_rewriter_abort(self):
-
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths1(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
-                return ['/baz']
+                return ["/baz"]
 
         provideAdapter(FauxPurgePaths1, name="test1")
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths2(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo/view']
+                return ["/foo/view"]
 
             def getAbsolutePaths(self):
-                return ['/quux']
+                return ["/quux"]
 
         provideAdapter(FauxPurgePaths2, name="test2")
 
         @implementer(IPurgePathRewriter)
         @adapter(FauxRequest)
         class DefaultRewriter(object):
-
             def __init__(self, request):
                 self.request = request
 
@@ -256,36 +246,35 @@ class TestGetPathsToPurge(unittest.TestCase):
         provideAdapter(DefaultRewriter)
 
         self.assertEqual(
-            ['/baz', '/quux'],
-            list(utils.getPathsToPurge(self.context, self.request))
+            ["/baz", "/quux"],
+            list(utils.getPathsToPurge(self.context, self.request)),
         )
 
 
 class TestGetURLsToPurge(unittest.TestCase):
-
     def test_no_proxies(self):
-        self.assertEqual([], list(utils.getURLsToPurge('/foo', [])))
+        self.assertEqual([], list(utils.getURLsToPurge("/foo", [])))
 
     def test_absolute_path(self):
         self.assertEqual(
-            ['http://localhost:1234/foo/bar', 'http://localhost:2345/foo/bar'],
+            ["http://localhost:1234/foo/bar", "http://localhost:2345/foo/bar"],
             list(
                 utils.getURLsToPurge(
-                    '/foo/bar',
-                    ['http://localhost:1234', 'http://localhost:2345/']
+                    "/foo/bar",
+                    ["http://localhost:1234", "http://localhost:2345/"],
                 )
-            )
+            ),
         )
 
     def test_relative_path(self):
         self.assertEqual(
-            ['http://localhost:1234/foo/bar', 'http://localhost:2345/foo/bar'],
+            ["http://localhost:1234/foo/bar", "http://localhost:2345/foo/bar"],
             list(
                 utils.getURLsToPurge(
-                    'foo/bar',
-                    ['http://localhost:1234', 'http://localhost:2345/']
+                    "foo/bar",
+                    ["http://localhost:1234", "http://localhost:2345/"],
                 )
-            )
+            ),
         )
 
 

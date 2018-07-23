@@ -6,7 +6,11 @@ Changelog
 
 Breaking changes:
 
-- *add item here*
+- Use `requests <http://docs.python-requests.org/>`_ library instead of handcrafting connection and requests on our own.
+  This avoids strange problems in real-world customers environments.
+  We do not need to reinvent the wheel here.
+  Requests always uses HTTP 1.1 and drops support for HTTP 1.0 only caches.
+  [jensens]
 
 New features:
 
