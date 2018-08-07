@@ -213,11 +213,11 @@ class Worker(threading.Thread):
                             # All other exceptions are evil - we just disard
                             # the item.  This prevents other logic failures etc
                             # being retried.
-                            logger.exception("Failed to purge %s", url)
+                            logger.exception("Failed to purge {0}".format(url))
                             break
                         logger.debug(
-                            "Transient failure on %s for %s, "
-                            "retrying: %s" % (httpVerb, url)
+                            "Transient failure on {0} for {1}, "
+                            "retrying: {2}".format(httpVerb, url, i)
                         )
 
         except Exception:
