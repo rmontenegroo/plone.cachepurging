@@ -22,7 +22,7 @@ class DefaultRewriter(object):
         request = self.request
 
         # No rewriting necessary
-        virtualURL = request.get('VIRTUAL_URL', None)
+        virtualURL = request.get("VIRTUAL_URL", None)
         if virtualURL is None:
             return [path]
 
@@ -39,17 +39,17 @@ class DefaultRewriter(object):
             return [path]
 
         # We need to reconstruct VHM URLs for each of the domains
-        virtualUrlParts = request.get('VIRTUAL_URL_PARTS')
-        virtualRootPhysicalPath = request.get('VirtualRootPhysicalPath')
+        virtualUrlParts = request.get("VIRTUAL_URL_PARTS")
+        virtualRootPhysicalPath = request.get("VirtualRootPhysicalPath")
 
         # Make sure request is compliant
         if (
-            not virtualUrlParts or
-            not virtualRootPhysicalPath or
-            not isinstance(virtualUrlParts, (list, tuple,)) or
-            not isinstance(virtualRootPhysicalPath, (list, tuple,)) or
-            len(virtualUrlParts) < 2 or
-            len(virtualUrlParts) > 3
+            not virtualUrlParts
+            or not virtualRootPhysicalPath
+            or not isinstance(virtualUrlParts, (list, tuple))
+            or not isinstance(virtualRootPhysicalPath, (list, tuple))
+            or len(virtualUrlParts) < 2
+            or len(virtualUrlParts) > 3
         ):
             return [path]
 
@@ -58,31 +58,33 @@ class DefaultRewriter(object):
             domains = [virtualUrlParts[0]]
 
         # Virtual root, e.g. /Plone. Clear if we don't have any virtual root
-        virtualRoot = '/'.join(virtualRootPhysicalPath)
-        if virtualRoot == '/':
-            virtualRoot = ''
+        virtualRoot = "/".join(virtualRootPhysicalPath)
+        if virtualRoot == "/":
+            virtualRoot = ""
 
         # Prefix, e.g. /_vh_foo/_vh_bar. Clear if we don't have any.
-        pathPrefix = len(virtualUrlParts) == 3 and virtualUrlParts[1] or ''
+        pathPrefix = len(virtualUrlParts) == 3 and virtualUrlParts[1] or ""
         if pathPrefix:
-            pathPrefix = '/' + \
-                '/'.join(['_vh_%s' % p for p in pathPrefix.split('/')])
+            pathPrefix = "/" + "/".join(
+                ["_vh_%s" % p for p in pathPrefix.split("/")]
+            )
 
         # Path, e.g. /front-page
-        if len(path) > 0 and not path.startswith('/'):
-            path = '/' + path
+        if len(path) > 0 and not path.startswith("/"):
+            path = "/" + path
 
         paths = []
         for domain in domains:
             scheme, host = urllib.parse.urlparse(domain)[:2]
             paths.append(
-                '/VirtualHostBase/%(scheme)s/%(host)s%(root)s/'
-                'VirtualHostRoot%(prefix)s%(path)s' % {
-                    'scheme': scheme,
-                    'host': host,
-                    'root': virtualRoot,
-                    'prefix': pathPrefix,
-                    'path': path
+                "/VirtualHostBase/%(scheme)s/%(host)s%(root)s/"
+                "VirtualHostRoot%(prefix)s%(path)s"
+                % {
+                    "scheme": scheme,
+                    "host": host,
+                    "root": virtualRoot,
+                    "prefix": pathPrefix,
+                    "path": path,
                 }
             )
         return paths

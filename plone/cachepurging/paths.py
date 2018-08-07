@@ -15,7 +15,7 @@ class TraversablePurgePaths(object):
         self.context = context
 
     def getRelativePaths(self):
-        return ['/' + self.context.virtual_url_path()]
+        return ["/" + self.context.virtual_url_path()]
 
     def getAbsolutePaths(self):
         return []

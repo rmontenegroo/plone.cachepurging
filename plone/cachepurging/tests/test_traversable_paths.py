@@ -8,19 +8,17 @@ import unittest
 
 @implementer(ITraversable)
 class FauxTraversable(object):
-
     def virtual_url_path(self):
-        return 'foo'
+        return "foo"
 
 
 class TestTraversablePaths(unittest.TestCase):
-
     def test_traversable_paths(self):
 
         context = FauxTraversable()
         paths = TraversablePurgePaths(context)
 
-        self.assertEqual(['/foo'], paths.getRelativePaths())
+        self.assertEqual(["/foo"], paths.getRelativePaths())
         self.assertEqual([], paths.getAbsolutePaths())
 
 

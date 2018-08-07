@@ -34,7 +34,6 @@ class FauxRequest(dict):
 
 
 class TestQueueHandler(unittest.TestCase):
-
     def setUp(self):
         provideAdapter(AttributeAnnotations)
         provideAdapter(persistentFieldAdapter)
@@ -53,17 +52,16 @@ class TestQueueHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
                 return []
@@ -87,17 +85,16 @@ class TestQueueHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
                 return []
@@ -119,12 +116,11 @@ class TestQueueHandler(unittest.TestCase):
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
                 return []
@@ -148,17 +144,16 @@ class TestQueueHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = False
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
                 return []
@@ -182,12 +177,13 @@ class TestQueueHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         notify(Purge(context))
 
-        self.assertEqual({'plone.cachepurging.urls': set()},
-                         dict(IAnnotations(request)))
+        self.assertEqual(
+            {"plone.cachepurging.urls": set()}, dict(IAnnotations(request))
+        )
 
     def test_enabled(self):
         context = FauxContext()
@@ -202,17 +198,16 @@ class TestQueueHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurgePaths)
         @adapter(FauxContext)
         class FauxPurgePaths(object):
-
             def __init__(self, context):
                 self.context = context
 
             def getRelativePaths(self):
-                return ['/foo', '/bar']
+                return ["/foo", "/bar"]
 
             def getAbsolutePaths(self):
                 return []
@@ -221,12 +216,13 @@ class TestQueueHandler(unittest.TestCase):
 
         notify(Purge(context))
 
-        self.assertEqual({'plone.cachepurging.urls': set(['/foo', '/bar'])},
-                         dict(IAnnotations(request)))
+        self.assertEqual(
+            {"plone.cachepurging.urls": set(["/foo", "/bar"])},
+            dict(IAnnotations(request)),
+        )
 
 
 class TestPurgeHandler(unittest.TestCase):
-
     def setUp(self):
         provideAdapter(AttributeAnnotations)
         provideAdapter(persistentFieldAdapter)
@@ -244,15 +240,14 @@ class TestPurgeHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurger)
         class FauxPurger(object):
-
             def __init__(self):
                 self.purged = []
 
-            def purgeAsync(self, url, httpVerb='PURGE'):
+            def purgeAsync(self, url, httpVerb="PURGE"):
                 self.purged.append(url)
 
         purger = FauxPurger()
@@ -272,15 +267,14 @@ class TestPurgeHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurger)
         class FauxPurger(object):
-
             def __init__(self):
                 self.purged = []
 
-            def purgeAsync(self, url, httpVerb='PURGE'):
+            def purgeAsync(self, url, httpVerb="PURGE"):
                 self.purged.append(url)
 
         purger = FauxPurger()
@@ -294,7 +288,7 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set()
+        IAnnotations(request)["plone.cachepurging.urls"] = set()
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -302,15 +296,14 @@ class TestPurgeHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurger)
         class FauxPurger(object):
-
             def __init__(self):
                 self.purged = []
 
-            def purgeAsync(self, url, httpVerb='PURGE'):
+            def purgeAsync(self, url, httpVerb="PURGE"):
                 self.purged.append(url)
 
         purger = FauxPurger()
@@ -324,16 +317,16 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(
-            ['/foo', '/bar'])
+        IAnnotations(request)["plone.cachepurging.urls"] = set(
+            ["/foo", "/bar"]
+        )
 
         @implementer(IPurger)
         class FauxPurger(object):
-
             def __init__(self):
                 self.purged = []
 
-            def purgeAsync(self, url, httpVerb='PURGE'):
+            def purgeAsync(self, url, httpVerb="PURGE"):
                 self.purged.append(url)
 
         purger = FauxPurger()
@@ -347,8 +340,9 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(
-            ['/foo', '/bar'])
+        IAnnotations(request)["plone.cachepurging.urls"] = set(
+            ["/foo", "/bar"]
+        )
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -356,15 +350,14 @@ class TestPurgeHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = False
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurger)
         class FauxPurger(object):
-
             def __init__(self):
                 self.purged = []
 
-            def purgeAsync(self, url, httpVerb='PURGE'):
+            def purgeAsync(self, url, httpVerb="PURGE"):
                 self.purged.append(url)
 
         purger = FauxPurger()
@@ -378,8 +371,9 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(
-            ['/foo', '/bar'])
+        IAnnotations(request)["plone.cachepurging.urls"] = set(
+            ["/foo", "/bar"]
+        )
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -387,7 +381,7 @@ class TestPurgeHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         try:
             notify(PubSuccess(request))
@@ -398,8 +392,9 @@ class TestPurgeHandler(unittest.TestCase):
         request = FauxRequest()
         alsoProvides(request, IAttributeAnnotatable)
 
-        IAnnotations(request)['plone.cachepurging.urls'] = set(
-            ['/foo', '/bar'])
+        IAnnotations(request)["plone.cachepurging.urls"] = set(
+            ["/foo", "/bar"]
+        )
 
         registry = Registry()
         registry.registerInterface(ICachePurgingSettings)
@@ -407,15 +402,14 @@ class TestPurgeHandler(unittest.TestCase):
 
         settings = registry.forInterface(ICachePurgingSettings)
         settings.enabled = True
-        settings.cachingProxies = ('http://localhost:1234',)
+        settings.cachingProxies = ("http://localhost:1234",)
 
         @implementer(IPurger)
         class FauxPurger(object):
-
             def __init__(self):
                 self.purged = []
 
-            def purgeAsync(self, url, httpVerb='PURGE'):
+            def purgeAsync(self, url, httpVerb="PURGE"):
                 self.purged.append(url)
 
         purger = FauxPurger()
@@ -423,7 +417,7 @@ class TestPurgeHandler(unittest.TestCase):
 
         notify(PubSuccess(request))
         self.assertSetEqual(
-            {'http://localhost:1234/foo', 'http://localhost:1234/bar'},
+            {"http://localhost:1234/foo", "http://localhost:1234/bar"},
             set(purger.purged),
         )
 
