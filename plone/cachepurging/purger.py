@@ -75,7 +75,7 @@ class DefaultPurger(object):
         try:
             with requests.Session() as session:
                 resp, xcache, xerror = self.purge(session, url, httpVerb)
-                status = str(resp.status_code)
+                status = resp.status_code
         except Exception:
             status = "ERROR"
             err, msg, tb = sys.exc_info()
@@ -119,14 +119,16 @@ class DefaultPurger(object):
             except queue.Full:
                 # no problem - self.stopping should be seen.
                 pass
-        ok = True
         if wait:
-            for w in six.itervalues(self.workers):
-                w.join(5)
-                if w.isAlive():
-                    logger.warning("Worker thread %s failed to terminate", w)
-                    ok = False
-        return ok
+            for worker in six.itervalues(self.workers):
+                worker.join(5)
+                if worker.isAlive():
+                    logger.warning(
+                        "Worker thread %s failed to terminate",
+                        worker
+                    )
+                    return False
+        return True
 
     def getQueueAndWorker(self, url):
         """Create or retrieve a queue and a worker thread instance for the
@@ -205,9 +207,13 @@ class Worker(threading.Thread):
                             resp, msg, err = self.producer.purge(
                                 session, url, httpVerb
                             )
-                            # TODO: Check resp for errors,
-                            # if all fine:
                             if resp.status_code == requests.codes.ok:
+                                break  # all done with this item!
+                            if resp.status_code == requests.codes.not_found:
+                                # not found is valid
+                                logger.debug(
+                                    "Purge URL not found: {0}".format(url)
+                                )
                                 break  # all done with this item!
                         except Exception:
                             # All other exceptions are evil - we just disard

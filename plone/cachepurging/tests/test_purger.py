@@ -86,10 +86,6 @@ class TestCase(unittest.TestCase):
                     if self.httpd.response_queue.empty():
                         break
                     time.sleep(0.1)
-                self.assertTrue(
-                    self.httpd.response_queue.empty(),
-                    "response queue not consumed",
-                )
             if not self.purger.stopThreads(wait=True):
                 self.fail("The purge threads did not stop")
         finally:
@@ -120,7 +116,6 @@ class TestCase(unittest.TestCase):
 class TestSync(TestCase):
     def setUp(self):
         super(TestSync, self).setUp()
-        self.purger.http_1_1 = True
         self.maxDiff = None
 
     def tearDown(self):
@@ -149,12 +144,6 @@ class TestSync(TestCase):
         self.assertEqual(status, "ERROR")
 
 
-class TestSyncHTTP10(TestSync):
-    def setUp(self):
-        super(TestSync, self).setUp()
-        self.purger.http_1_1 = False
-
-
 class TestAsync(TestCase):
     def dispatchURL(self, path, method="PURGE", port=SERVER_PORT):
         url = "http://localhost:%s%s" % (port, path)
@@ -180,10 +169,28 @@ class TestAsync(TestCase):
         # In this test we arrange for an error condition in the middle
         # of 2 items - this forces the server into its retry condition.
         self.httpd.queue_response(response=200)
-        self.httpd.queue_response(response=None)
+        self.httpd.queue_response(response=500)
         self.httpd.queue_response(response=200)
         self.dispatchURL("/foo")  # will consume first.
         self.dispatchURL("/bar")  # will consume error, then retry
+        self.assertTrue(
+            self.httpd.response_queue.empty(),
+            "Left items behind in HTTPD response queue."
+        )
+
+    def testAsyncNotFOund(self):
+        self.httpd.queue_response(response=404)
+        self.httpd.queue_response(response=200)
+        self.dispatchURL("/foo")  # works
+        self.assertFalse(
+            self.httpd.response_queue.empty(),
+            "404 was retried instead of consumed."
+        )
+        self.dispatchURL("/foo")  # works
+        self.assertTrue(
+            self.httpd.response_queue.empty(),
+            "Left items behind in HTTPD response queue."
+        )
 
 
 class TestAsyncConnectionFailure(TestCase):
