@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0.16.dev0'
+version = '1.0.16'
 
 setup(
     name='plone.cachepurging',
