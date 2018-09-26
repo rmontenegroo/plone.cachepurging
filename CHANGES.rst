@@ -4,14 +4,6 @@ Changelog
 1.0.16 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Set default purger backlog size to 0 (infinity) in order to fully invalidate Varnish cache
