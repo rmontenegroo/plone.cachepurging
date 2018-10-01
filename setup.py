@@ -20,7 +20,7 @@ setup(
     keywords="plone cache purge",
     author="Plone Foundation",
     author_email="plone-developers@lists.sourceforge.net",
-    url="https://pypi.python.org/pypi/plone.cachepurging",
+    url="https://pypi.org/project/plone.cachepurging",
     license="GPL version 2",
     packages=find_packages(exclude=["ez_setup"]),
     namespace_packages=["plone"],
