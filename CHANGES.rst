@@ -14,7 +14,8 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Try to avoid port collisions when running tests.
+  [gforcada]
 
 Bug fixes:
 
