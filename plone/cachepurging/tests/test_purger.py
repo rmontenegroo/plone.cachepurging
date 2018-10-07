@@ -14,11 +14,6 @@ import time
 import unittest
 
 
-# Define a test HTTP server that returns canned responses
-
-SERVER_PORT = int(os.environ.get("ZSERVER_PORT", 8765))
-
-
 class TestHandler(BaseHTTPRequestHandler):
     def do_PURGE(self):
         # Get the pre-defined response from the server's queue.
@@ -75,7 +70,7 @@ class TestHTTPServer(HTTPServer):
 class TestCase(unittest.TestCase):
     def setUp(self):
         self.purger = DefaultPurger()
-        self.httpd, self.httpt = self.startServer()
+        self.httpd, self.httpt, self.port = self.startServer()
 
     def tearDown(self):
         try:
@@ -101,16 +96,18 @@ class TestCase(unittest.TestCase):
                 self.purger = None
                 self.httpd, self.httpt = None, None
 
-    def startServer(self, port=SERVER_PORT, start=True):
+    def startServer(self, start=True):
         """Start a TestHTTPServer in a separate thread, returning a tuple
         (server, thread). If start is true, the thread is started.
         """
-        server_address = ("localhost", port)
+        environment_port = int(os.environ.get("ZSERVER_PORT", 0))
+        server_address = ("localhost", environment_port)
         httpd = TestHTTPServer(server_address, TestHandler)
+        _, actual_port = httpd.socket.getsockname()
         t = threading.Thread(target=httpd.serve_forever)
         if start:
             t.start()
-        return httpd, t
+        return httpd, t, actual_port
 
 
 class TestSync(TestCase):
@@ -121,8 +118,8 @@ class TestSync(TestCase):
     def tearDown(self):
         super(TestSync, self).tearDown()
 
-    def dispatchURL(self, path, method="PURGE", port=SERVER_PORT):
-        url = "http://localhost:%s%s" % (port, path)
+    def dispatchURL(self, path, method="PURGE"):
+        url = "http://localhost:%s%s" % (self.port, path)
         return self.purger.purgeSync(url, method)
 
     def testSimpleSync(self):
@@ -145,8 +142,8 @@ class TestSync(TestCase):
 
 
 class TestAsync(TestCase):
-    def dispatchURL(self, path, method="PURGE", port=SERVER_PORT):
-        url = "http://localhost:%s%s" % (port, path)
+    def dispatchURL(self, path, method="PURGE"):
+        url = "http://localhost:%s%s" % (self.port, path)
         self.purger.purgeAsync(url, method)
 
         # Item should now be in the queue!
@@ -197,10 +194,10 @@ class TestAsyncConnectionFailure(TestCase):
     def setUp(self):
         # Override setup to not start the server immediately
         self.purger = DefaultPurger()
-        self.httpd, self.httpt = self.startServer(start=False)
+        self.httpd, self.httpt, self.port = self.startServer(start=False)
 
-    def dispatchURL(self, path, method="PURGE", port=SERVER_PORT):
-        url = "http://localhost:%s%s" % (port, path)
+    def dispatchURL(self, path, method="PURGE"):
+        url = "http://localhost:%s%s" % (self.port, path)
         self.purger.purgeAsync(url, method)
 
         # Item should now be in the queue!
