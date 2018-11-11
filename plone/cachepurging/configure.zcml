@@ -4,7 +4,6 @@
     i18n_domain="plone">
 
     <include package="zope.annotation" />
-    <include package="five.globalrequest" />
     <include package="plone.registry" />
 
     <!-- Default rewriter and purge urls -->

@@ -30,7 +30,6 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
-        "five.globalrequest",
         "plone.registry",
         "requests",
         "six",
