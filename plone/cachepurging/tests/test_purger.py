@@ -94,6 +94,7 @@ class TestCase(unittest.TestCase):
                     self.fail("Thread failed to shut down")
 
                 self.purger = None
+                self.httpd.server_close()
                 self.httpd, self.httpt = None, None
 
     def startServer(self, start=True):

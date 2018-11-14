@@ -16,8 +16,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
-
+- Avoid a ResourceWarning: unclosed socket.
+  [gforcada]
 
 2.0 (2018-10-31)
 ----------------
