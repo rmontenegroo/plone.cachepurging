@@ -10,10 +10,6 @@ Breaking changes:
   It has been deprecated upstream (Zope 4).
   [gforcada]
 
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Avoid a ResourceWarning: unclosed socket.
