@@ -10,6 +10,7 @@ setup(
         open("README.rst").read() + "\n" + open("CHANGES.rst").read()
     ),
     classifiers=[
+        "Development Status :: 5 - Production/Stable",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
