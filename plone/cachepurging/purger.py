@@ -27,6 +27,8 @@ import requests
 import six
 import sys
 import threading
+import socket
+import urllib
 
 
 logger = logging.getLogger(__name__)
@@ -179,6 +181,36 @@ class Worker(threading.Thread):
     def stop(self):
         self.stopping = True
 
+    def unfoldURL(self, url):
+        logger.info('Unfolding URL: %s' % url)
+
+        output = [url,]
+        
+        urlinfo = list(urllib.parse.urlparse(url))
+        if not urlinfo[1]:
+            return output
+        
+        netlocinfo = urlinfo[1].split(':')
+
+        port = ''
+        netloc = netlocinfo[0]
+        
+        if len(netlocinfo) > 1:
+            port = netlocinfo[1]
+
+        try:
+            unfolded_netlocs = socket.gethostbyname_ex(netloc)[2]
+        except:
+            return output
+
+        output = []
+        for un in unfolded_netlocs:
+            new_netloc = un + ':' + port
+            urlinfo[1] = new_netloc
+            output.append(urllib.parse.urlunparse(urlinfo))
+
+        return output
+
     def run(self):
         logger.debug("%s starting", self)
         # queue should always exist!
@@ -196,35 +228,40 @@ class Worker(threading.Thread):
                         )
                         break
                     url, httpVerb = item
+                    unfoldedURLS = self.unfoldURL(url)
+                    logger.info('Unfolded URL: %s' % unfoldedURLS)
 
-                    # Loop handling errors (other than connection errors) doing
-                    # the actual purge.
-                    for i in range(5):
-                        if self.stopping:
-                            break
-                        # Got an item, purge it!
-                        try:
-                            resp, msg, err = self.producer.purge(
-                                session, url, httpVerb
-                            )
-                            if resp.status_code == requests.codes.ok:
-                                break  # all done with this item!
-                            if resp.status_code == requests.codes.not_found:
-                                # not found is valid
-                                logger.debug(
-                                    "Purge URL not found: {0}".format(url)
+                    for uu in unfoldedURLS:
+                        url = uu
+                        # Loop handling errors (other than connection errors) doing
+                        # the actual purge.
+                        for i in range(5):
+                            if self.stopping:
+                                break
+                            # Got an item, purge it!
+                            try:
+                                resp, msg, err = self.producer.purge(
+                                    session, url, httpVerb
                                 )
-                                break  # all done with this item!
-                        except Exception:
-                            # All other exceptions are evil - we just disard
-                            # the item.  This prevents other logic failures etc
-                            # being retried.
-                            logger.exception("Failed to purge {0}".format(url))
-                            break
-                        logger.debug(
-                            "Transient failure on {0} for {1}, "
-                            "retrying: {2}".format(httpVerb, url, i)
-                        )
+                                logger.info("url %s purged", url) # aqui
+                                if resp.status_code == requests.codes.ok:
+                                    break  # all done with this item!
+                                if resp.status_code == requests.codes.not_found:
+                                    # not found is valid
+                                    logger.debug(
+                                        "Purge URL not found: {0}".format(url)
+                                    )
+                                    break  # all done with this item!
+                            except Exception:
+                                # All other exceptions are evil - we just disard
+                                # the item.  This prevents other logic failures etc
+                                # being retried.
+                                logger.exception("Failed to purge {0}".format(url))
+                                break
+                            logger.debug(
+                                "Transient failure on {0} for {1}, "
+                                "retrying: {2}".format(httpVerb, url, i)
+                            )
 
         except Exception:
             logger.exception(
